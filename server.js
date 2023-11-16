@@ -58,20 +58,20 @@ app.get('/jeux/:id', async (req, res) => {
         }
     }
 });
+
 app.get('/utilisateurs', async (req, res) => {
     let conn;
     try {
         conn = await pool.getConnection();
-        const rows = await conn.query("SELECT id, email, nom, prenom, mot_de_passe FROM utilisateurs");
+        const rows = await conn.query("SELECT id, email, nom, prenom FROM utilisateurs");
         conn.release();
 
-        const utilisateurs = rows.map(utilisateurs => {
+        const utilisateurs = rows.map(utilisateur => {
             return {
-                id: utilisateurs.id,
-                email: utilisateurs.email,
-                nom: utilisateurs.nom,
-                prenom: utilisateurs.prenom,
-                mot_de_passe: bcrypt.hashSync(utilisateurs.mot_de_passe, 10)
+                id: utilisateur.id,
+                email: utilisateur.email,
+                nom: utilisateur.nom,
+                prenom: utilisateur.prenom,
             };
         });
 
@@ -81,6 +81,7 @@ app.get('/utilisateurs', async (req, res) => {
         res.status(500).send("Erreur interne du serveur");
     }
 });
+
 app.get('/utilisateurs/:id', async (req, res) => {
     let conn;
     try {
