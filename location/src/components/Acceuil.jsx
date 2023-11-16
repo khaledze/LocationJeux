@@ -5,9 +5,9 @@ export default function Acceuil() {
   return (
     <div>
         <header>
-            <h1>Welcome to Acceuil</h1> // Add your header content here
+            <h1>Welcome to Acceuil</h1>
         </header>
-        <Jeu /> // Include the Jeu component
+        <Jeu /> 
     </div>
   );
 }

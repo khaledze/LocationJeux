@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import './card.css'; // Assurez-vous d'importer correctement votre fichier de style CSS
 
 export default function Jeu() {
   const [jeux, setJeux] = useState([]);
@@ -18,10 +19,15 @@ export default function Jeu() {
   }, []);
 
   return (
-    <div>
-      {jeux.map(jeux => (
-        <div key={jeux.id}>{jeux.nom}</div>
+    <div className="jeux-container">
+      {jeux.map(jeu => (
+        <div key={jeu.id} className="card">
+          <h2>{jeu.nom_jeu}</h2>
+          <p>ID: {jeu.id}</p>
+          <p>Prix: {jeu.prix}</p>
+        </div>
       ))}
     </div>
   );
 }
+
