@@ -180,7 +180,7 @@ app.post('/connexion', async (req, res) => {
         }
     }
 });
-app.get('/jeux/:id', async (req, res) => {
+app.get('/location/:id', async (req, res) => {
     let conn;
     try {
         console.log("Lancement de la requête");

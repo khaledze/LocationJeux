@@ -20,7 +20,7 @@ export default function Jeu() {
   return (
     <div>
       {jeux.map(jeux => (
-        <div key={jeux.id}>{jeux.nom}</div> // Replace 'id' and 'name' with the actual properties of your 'jeu' object
+        <div key={jeux.id}>{jeux.nom}</div>
       ))}
     </div>
   );
