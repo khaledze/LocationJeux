@@ -28,7 +28,7 @@ export default function CreationPage() {
 
       if (response.ok) {
         console.log("Utilisateur créé avec succès !");
-        navigate('/');
+        navigate('/acceuil');
       } else {
         console.error("Échec de la création de l'utilisateur");
       }

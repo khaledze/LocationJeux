@@ -25,7 +25,7 @@ export default function ConnexionPage() {
       if (response.ok) {
         console.log("Connexion réussie !");
         localStorage.setItem('user', JSON.stringify(user));
-        navigate('/');
+        navigate('/acceuil');
       } else {
         console.error("Échec de la connexion");
       }
