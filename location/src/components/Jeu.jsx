@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import './card.css'; // Assurez-vous d'importer correctement votre fichier de style CSS
+import './card.css'; 
 
 export default function Jeu() {
   const [jeux, setJeux] = useState([]);
@@ -24,7 +24,7 @@ export default function Jeu() {
         <div key={jeu.id} className="card">
           <h2>{jeu.nom_jeu}</h2>
           <p>ID: {jeu.id}</p>
-          <p>Prix: {jeu.prix}</p>
+          <p>Prix: {jeu.prix}$</p>
         </div>
       ))}
     </div>
