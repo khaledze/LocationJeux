@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import ConnexionPage from './components/ConnexionPage';
 import CreationPage from './components/CreationPage';
 import { useState } from 'react';
+import Acceuil from './components/Acceuil';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false); // Ajout de l'état isLoggedIn
@@ -13,6 +14,7 @@ function App() {
         <Route path="/" element={<ConnexionPage isLoggedIn={isLoggedIn} />} /> {/* Default route */}
           <Route path="/connexion" element={<ConnexionPage isLoggedIn={isLoggedIn} />} /> {/* Passer isLoggedIn à Home */}
           <Route path="/creation" element={<CreationPage />} />
+          <Route path="/acceuil" element={<Acceuil />} />
         </Routes>
       </Router>
     </div>
