@@ -8,6 +8,7 @@ export default function Jeu() {
       try {
         const response = await fetch('http://localhost:3001/jeux');
         const data = await response.json();
+        console.log(data); // Log the data to the console
         setJeux(data);
       } catch (error) {
         console.error("Erreur lors de la récupération des jeux :", error);
@@ -19,8 +20,12 @@ export default function Jeu() {
 
   return (
     <div>
-      {jeux.map(jeux => (
-        <div key={jeux.id}>{jeux.nom}</div> // Replace 'id' and 'name' with the actual properties of your 'jeu' object
+      {jeux.map(jeu => (
+               <div key={jeu.id}>
+               <h2>{jeu.nom_jeu}</h2> 
+               <p> {jeu.id}</p> 
+               <p>{jeu.prix}</p> 
+             </div>
       ))}
     </div>
   );
