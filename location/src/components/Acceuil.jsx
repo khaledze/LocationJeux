@@ -1,5 +1,5 @@
 import React from 'react';
-import Jeu from './Jeu'; // Import the Jeu component
+import Jeu from './Jeu'; 
 
 export default function Acceuil() {
   return (
