@@ -7,37 +7,63 @@ export default function MesJeux() {
   const [jeux, setJeux] = useState([]);
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [selectedGameForReview, setSelectedGameForReview] = useState(null);
-  const [comment, setComment] = useState("");
+  const [comment, setComment] = useState('');
   const [rating, setRating] = useState(0);
   const utilisateurId = localStorage.getItem("utilisateurId");
 
-  const handleReviewClick = (jeu) => {
-    setSelectedGameForReview(jeu);
-    setShowReviewForm(true);
-  };
 
-  const handleReviewSubmit = () => {
-    // Effectuez ici le traitement de la soumission du commentaire et de la note
-    // par exemple, une requête à votre API pour enregistrer les données
-    // Assurez-vous de gérer la soumission des données correctement
-    console.log(`Comment: ${comment}, Rating: ${rating}`);
-    // Après la soumission, vous pouvez réinitialiser l'état et masquer le formulaire
-    setShowReviewForm(false);
-    setSelectedGameForReview(null);
-    setComment("");
-    setRating(0);
-  };
 
-  useEffect(() => {
-    const fetchJeux = async () => {
+    const handleReviewClick = (jeu) => {
+      setSelectedGameForReview(jeu);
+      setShowReviewForm(true);
+    };
+
+    const handleReviewSubmit = async (e) => {
+      e.preventDefault();
+      
       try {
-        const response = await fetch("http://localhost:3001/jeux");
-        const data = await response.json();
-        setJeux(data);
+        const response = await fetch('http://localhost:3001/locations/infos', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            jeuId: selectedGameForReview.id,
+            utilisateurId: localStorage.getItem("utilisateurId"),
+            notes: rating,
+            commentaire: comment,
+          }),
+        });
+      
+        if (response.ok) {
+          console.log('Review submitted successfully');
+        } else {
+          console.error('Failed to submit review:', response.statusText);
+        }
       } catch (error) {
-        console.error("Erreur lors de la récupération des jeux :", error);
+        console.error('Error submitting review:', error);
+      } finally {
+        setShowReviewForm(false);
+        setSelectedGameForReview(null);
+        setComment('');
+        setRating(0);
       }
     };
+    
+    
+    
+
+    useEffect(() => {
+      const fetchJeux = async () => {
+        try {
+          const response = await fetch("http://localhost:3001/jeux");
+          const data = await response.json();
+          setJeux(data);
+        } catch (error) {
+          console.error("Erreur lors de la récupération des jeux :", error);
+        }
+      };
+
 
     const fetchLocations = async () => {
       try {
@@ -64,7 +90,6 @@ export default function MesJeux() {
     const jeuCorrespondant = jeux.find((jeu) => jeu.id === location.jeux_id);
     return { ...location, jeu: jeuCorrespondant };
   });
-
   return (
     <div>
       <header className="custom-header1">
@@ -128,3 +153,4 @@ export default function MesJeux() {
     </div>
   );
 }
+      
