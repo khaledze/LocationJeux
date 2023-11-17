@@ -13,6 +13,7 @@ const pool = mariadb.createPool({
     database: process.env.DB_DTB,
     connectionLimit:100
 })
+//Renvoie tous les jeux de la base de données.
 app.get('/jeux', async (req, res) => {
     let conn;
     try {
@@ -33,6 +34,7 @@ app.get('/jeux', async (req, res) => {
         }
     }
 });
+//Renvoie un jeu spécifique en fonction de l'ID fourni dans la requête.
 app.get('/jeux/:id', async (req, res) => {
     let conn;
     try {
@@ -58,7 +60,7 @@ app.get('/jeux/:id', async (req, res) => {
         }
     }
 });
-
+//Renvoie les informations de base de tous les utilisateurs.
 app.get('/utilisateurs', async (req, res) => {
     let conn;
     try {
@@ -81,7 +83,7 @@ app.get('/utilisateurs', async (req, res) => {
         res.status(500).send("Erreur interne du serveur");
     }
 });
-
+//Renvoie les informations d'un utilisateur spécifique en fonction de l'ID fourni.
 app.get('/utilisateurs/:id', async (req, res) => {
     let conn;
     try {
@@ -106,6 +108,7 @@ app.get('/utilisateurs/:id', async (req, res) => {
         res.status(500).send("Erreur interne du serveur");
     }
 });
+//Permet d'ajouter un nouvel utilisateur.
 app.post('/utilisateurs', async (req, res) => {
     const { email, password, nom, prenom } = req.body;
 
@@ -129,7 +132,7 @@ app.post('/utilisateurs', async (req, res) => {
         res.status(500).json({ error: "Erreur interne du serveur", details: err.message });
     }
 });
-
+//Vérifie les informations d'identification pour connecter un utilisateur
 app.post('/connexion', async (req, res) => {
     const { email, password } = req.body;
     let conn;
@@ -160,7 +163,7 @@ app.post('/connexion', async (req, res) => {
         }
     }
 });
-
+//Renvoie toutes les locations enregistrées.
   app.get('/location', async (req, res) => {
     let conn;
     try {
@@ -181,6 +184,7 @@ app.post('/connexion', async (req, res) => {
         }
     }
 });
+//Renvoie une location spécifique en fonction de l'ID fourni.
 app.get('/location/:id', async (req, res) => {
     let conn;
     try {
@@ -206,6 +210,7 @@ app.get('/location/:id', async (req, res) => {
         }
     }
 });
+//Ajoute une nouvelle location dans la base de données.
 app.post('/locations', async (req, res) => {
     const { jeuId, utilisateurId, dateDebut, dateFin, prix } = req.body;
   
@@ -223,7 +228,7 @@ app.post('/locations', async (req, res) => {
       res.status(500).json({ success: false, message: 'Erreur interne du serveur' });
     }
   });
-
+// Enregistre les informations spécifiques sur une location (notes, commentaires, etc.).
   app.post('/locations/infos', async (req, res) => {
     const { jeuId, utilisateurId, notes, commentaire } = req.body;
 
@@ -255,7 +260,7 @@ app.post('/locations', async (req, res) => {
 
 
   
-  
+  //Renvoie les locations associées à un utilisateur spécifique.
   app.get('/locations/utilisateur/:utilisateurId', async (req, res) => {
     let conn;
     try {

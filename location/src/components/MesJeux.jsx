@@ -3,67 +3,63 @@ import "./card.css";
 import { Link } from "react-router-dom";
 
 export default function MesJeux() {
-  const [locations, setLocations] = useState([]);
-  const [jeux, setJeux] = useState([]);
-  const [showReviewForm, setShowReviewForm] = useState(false);
-  const [selectedGameForReview, setSelectedGameForReview] = useState(null);
-  const [comment, setComment] = useState('');
-  const [rating, setRating] = useState(0);
-  const utilisateurId = localStorage.getItem("utilisateurId");
+  const [locations, setLocations] = useState([]); // Stockage des emplacements des jeux pour un utilisateur
+  const [jeux, setJeux] = useState([]); // Stockage des jeux disponibles
+  const [showReviewForm, setShowReviewForm] = useState(false); // Affichage du formulaire d'avis
+  const [selectedGameForReview, setSelectedGameForReview] = useState(null); // Jeu sélectionné pour donner un avis
+  const [comment, setComment] = useState(""); // Contenu du commentaire
+  const [rating, setRating] = useState(0); // Note attribuée au jeu
+  const utilisateurId = localStorage.getItem("utilisateurId"); // Récupération de l'ID de l'utilisateur depuis le stockage local
 
+  // Fonction pour gérer le clic sur l'icône de commentaire
+  const handleReviewClick = (jeu) => {
+    setSelectedGameForReview(jeu);
+    setShowReviewForm(true);
+  };
+  // Fonction pour soumettre l'avis sur un jeu
+  const handleReviewSubmit = async (e) => {
+    e.preventDefault();
 
+    try {
+      const response = await fetch("http://localhost:3001/locations/infos", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          jeuId: selectedGameForReview.id,
+          utilisateurId: localStorage.getItem("utilisateurId"),
+          notes: rating,
+          commentaire: comment,
+        }),
+      });
 
-    const handleReviewClick = (jeu) => {
-      setSelectedGameForReview(jeu);
-      setShowReviewForm(true);
-    };
+      if (response.ok) {
+        console.log("Review submitted successfully");
+      } else {
+        console.error("Failed to submit review:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error submitting review:", error);
+    } finally {
+      setShowReviewForm(false);
+      setSelectedGameForReview(null);
+      setComment("");
+      setRating(0);
+    }
+  };
 
-    const handleReviewSubmit = async (e) => {
-      e.preventDefault();
-      
+  // Effet pour récupérer les jeux disponibles et les emplacements des jeux pour l'utilisateur
+  useEffect(() => {
+    const fetchJeux = async () => {
       try {
-        const response = await fetch('http://localhost:3001/locations/infos', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            jeuId: selectedGameForReview.id,
-            utilisateurId: localStorage.getItem("utilisateurId"),
-            notes: rating,
-            commentaire: comment,
-          }),
-        });
-      
-        if (response.ok) {
-          console.log('Review submitted successfully');
-        } else {
-          console.error('Failed to submit review:', response.statusText);
-        }
+        const response = await fetch("http://localhost:3001/jeux");
+        const data = await response.json();
+        setJeux(data);
       } catch (error) {
-        console.error('Error submitting review:', error);
-      } finally {
-        setShowReviewForm(false);
-        setSelectedGameForReview(null);
-        setComment('');
-        setRating(0);
+        console.error("Erreur lors de la récupération des jeux :", error);
       }
     };
-    
-    
-    
-
-    useEffect(() => {
-      const fetchJeux = async () => {
-        try {
-          const response = await fetch("http://localhost:3001/jeux");
-          const data = await response.json();
-          setJeux(data);
-        } catch (error) {
-          console.error("Erreur lors de la récupération des jeux :", error);
-        }
-      };
-
 
     const fetchLocations = async () => {
       try {
@@ -85,11 +81,12 @@ export default function MesJeux() {
     fetchJeux();
     fetchLocations();
   }, [utilisateurId]);
-
+  // Création d'une liste des jeux avec leurs emplacements pour cet utilisateur
   const jeuxDansLocations = locations.map((location) => {
     const jeuCorrespondant = jeux.find((jeu) => jeu.id === location.jeux_id);
     return { ...location, jeu: jeuCorrespondant };
   });
+  // Retour de l'élément JSX à afficher dans l'interface utilisateur
   return (
     <div>
       <header className="custom-header1">
@@ -112,11 +109,11 @@ export default function MesJeux() {
             <p>Date de fin: {location.date_fin}</p>
             <p>Prix: {location.prix}€</p>
             <img
-              src={require("../img/cmt.svg").default }
+              src={require("../img/cmt.svg").default}
               alt="Obtenir"
               className="obtenir-icon"
               onClick={() => handleReviewClick(location.jeu)}
-              style={{height: '30px', width: '30px', cursor: 'pointer'}}
+              style={{ height: "30px", width: "30px", cursor: "pointer" }}
             />
           </div>
         ))}
@@ -153,4 +150,3 @@ export default function MesJeux() {
     </div>
   );
 }
-      
