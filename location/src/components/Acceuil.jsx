@@ -11,9 +11,7 @@ export default function Acceuil() {
   return (
     <div>
       <header>
-        <h1>Welcome</h1>
         <Link to="/mes-jeux">Mes Jeux</Link>
-        <MesJeux utilisateurId={utilisateurId} />
       </header>
       <Jeu /> 
     </div>

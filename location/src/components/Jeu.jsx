@@ -7,6 +7,7 @@ export default function Jeu() {
   const [showRentPage, setShowRentPage] = useState(false);
   const [rentalDate, setRentalDate] = useState("");
   const [returnDate, setReturnDate] = useState("");
+  const utilisateurId = localStorage.getItem('utilisateurId');
 
   useEffect(() => {
     const fetchJeux = async () => {
@@ -27,6 +28,39 @@ export default function Jeu() {
     setShowRentPage(true);
   };
 
+  const handleLouerClick = async () => {
+    try {
+      const { id: jeuId, nom_jeu, prix } = selectedJeu;
+
+      const response = await fetch('http://localhost:3001/locations', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          jeuId,
+          utilisateurId,
+          nom_jeu,
+          prix,
+          dateDebut: rentalDate,
+          dateFin: returnDate,
+        }),
+      });
+
+      if (response.ok) {
+        console.log(`Paiement réussi pour le jeu avec l'ID ${jeuId}`);
+        setShowRentPage(false);
+        setSelectedJeu(null);
+        setRentalDate("");
+        setReturnDate("");
+      } else {
+        console.error('Erreur lors du paiement :', response.statusText);
+      }
+    } catch (error) {
+      console.error('Erreur lors du paiement :', error);
+    }
+  };
+
   const renderRentPage = () => {
     const calculatePrice = () => {
       const pricePerDay = selectedJeu?.prix || 0;
@@ -38,18 +72,6 @@ export default function Jeu() {
     };
 
     const totalPrice = calculatePrice();
-
-    const handleLouerClick = () => {
-      const totalPrice = calculatePrice();
-      console.log(
-        `Game rented from ${rentalDate} to ${returnDate}. Total price: ${totalPrice}€`
-      );
-
-      setShowRentPage(false);
-      setSelectedJeu(null);
-      setRentalDate("");
-      setReturnDate("");
-    };
 
     return (
       <div className="rent-page">
@@ -75,28 +97,6 @@ export default function Jeu() {
       </div>
     );
   };
-
-  const handlePayerClick = async (jeuId) => {
-    try {
-      const response = await fetch('http://localhost:3001/locations', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          jeuId: jeuId,
-        }),
-      });
-  
-      if (response.ok) {
-        console.log(`Paiement réussi pour le jeu avec l'ID ${jeuId}`);
-      } else {
-        console.error('Erreur lors du paiement :', response.statusText);
-      }
-    } catch (error) {
-      console.error('Erreur lors du paiement :', error);
-    }
-  };
   
   return (
     <div>
@@ -121,4 +121,5 @@ export default function Jeu() {
       </div>
     </div>
   );
-        };  
+}
+

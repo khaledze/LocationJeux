@@ -207,18 +207,14 @@ app.get('/location/:id', async (req, res) => {
     }
 });
 app.post('/locations', async (req, res) => {
-    const { jeuId, utilisateurId } = req.body;
+    const { jeuId, utilisateurId, dateDebut, dateFin } = req.body;
   
     try {
       const conn = await pool.getConnection();
-      const dateDebut = new Date();
-      const dateFin = null;
-      const notes = null;
-      const commentaire = null; 
   
       await conn.query(
-        'INSERT INTO location (date_debut, date_fin, notes, commentaire, joueur_id, jeux_id) VALUES (?, ?, ?, ?, ?, ?)',
-        [dateDebut, dateFin, notes, commentaire, utilisateurId, jeuId]
+        'INSERT INTO location (jeux_id, joueur_id, date_debut, date_fin) VALUES (?, ?, ?, ?)',
+        [jeuId, utilisateurId, dateDebut, dateFin]
       );
   
       res.status(201).json({ success: true, message: 'Location créée avec succès' });
@@ -226,7 +222,7 @@ app.post('/locations', async (req, res) => {
       console.error('Erreur lors de la création de la location :', error);
       res.status(500).json({ success: false, message: 'Erreur interne du serveur' });
     }
-});
+  });
 
   
   
