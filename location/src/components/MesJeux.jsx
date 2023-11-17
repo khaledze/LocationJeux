@@ -1,14 +1,33 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
+import "./card.css";
+import { Link } from "react-router-dom";
 
 export default function MesJeux() {
   const [locations, setLocations] = useState([]);
-  const utilisateurId = localStorage.getItem('utilisateurId');
+  const [jeux, setJeux] = useState([]);
+  const utilisateurId = localStorage.getItem("utilisateurId");
 
   useEffect(() => {
+    const fetchJeux = async () => {
+      try {
+        const response = await fetch("http://localhost:3001/jeux");
+        const data = await response.json();
+        setJeux(data);
+      } catch (error) {
+        console.error("Erreur lors de la récupération des jeux :", error);
+      }
+    };
+
     const fetchLocations = async () => {
       try {
-        console.log("utilisateurId dans MesJeux :", utilisateurId);
-        const response = await fetch(`http://localhost:3001/locations/utilisateur/${utilisateurId}`);
+        if (!utilisateurId) {
+          console.error("Identifiant utilisateur non défini");
+          return;
+        }
+
+        const response = await fetch(
+          `http://localhost:3001/locations/utilisateur/${utilisateurId}`
+        );
         const data = await response.json();
         setLocations(data);
       } catch (error) {
@@ -16,27 +35,43 @@ export default function MesJeux() {
       }
     };
 
+    fetchJeux();
     fetchLocations();
   }, [utilisateurId]);
 
-  console.log("Locations :", locations);
+  const jeuxDansLocations = locations.map((location) => {
+    const jeuCorrespondant = jeux.find((jeu) => jeu.id === location.jeux_id);
+    return { ...location, jeu: jeuCorrespondant };
+  });
 
   return (
     <div>
-      <h1>Mes Locations</h1>
-      {locations.map(location => (
-        <div key={location.id}>
-          <p>ID: {location.id}</p>
+      <header className="custom-header">
+        <h1>Ma Boutique de Jeux</h1>
+        <div className="header-right">
+          <Link to="/acceuil">
+            <button className="mes-achats-button">Accueil</button>
+          </Link>
+        </div>
+      </header>
+      <div className="card-wrapper">
+      {jeuxDansLocations.map((location) => (
+        
+        <div key={location.id} className="card-container">
+          {location.jeu && (
+            <div>
+              <h2>{location.jeu.nom_jeu}</h2>
+              <p>Prix: {location.jeu.prix}€</p>
+            </div>
+          )}
           <p>Date de début: {location.date_debut}</p>
           <p>Date de fin: {location.date_fin}</p>
-          <p>Nom du jeu: {location.nom_jeu}</p>
-          <p>Nom de l'utilisateur: {location.nom_utilisateur}</p>
         </div>
+       
       ))}
+       </div>
+      
     </div>
   );
 }
-
-
-
 
