@@ -1,36 +1,39 @@
 import React, { useEffect, useState } from "react";
 import "./card.css";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 export default function Jeu() {
-  const [jeux, setJeux] = useState([]);
-  const [selectedJeu, setSelectedJeu] = useState(null);
-  const [showRentPage, setShowRentPage] = useState(false);
-  const [rentalDate, setRentalDate] = useState("");
-  const [returnDate, setReturnDate] = useState("");
-  const [searchTerm, setSearchTerm] = useState("");
-  const utilisateurId = localStorage.getItem('utilisateurId');
+  const [jeux, setJeux] = useState([]); // Stockage des jeux récupérés depuis l'API
+  const [selectedJeu, setSelectedJeu] = useState(null); // Stockage du jeu sélectionné pour la location
+  const [showRentPage, setShowRentPage] = useState(false); // Affichage de la page de location
+  const [rentalDate, setRentalDate] = useState(""); // Date de début de la location
+  const [returnDate, setReturnDate] = useState(""); // Date de fin de la location
+  const [searchTerm, setSearchTerm] = useState(""); // Terme de recherche pour filtrer les jeux
+  const utilisateurId = localStorage.getItem("utilisateurId"); // Récupération de l'ID de l'utilisateur depuis le stockage local
+
+
+  // Filtrage des jeux en fonction du terme de recherche
   const filteredJeux = jeux.filter(
     (jeu) =>
       jeu.id.toString().includes(searchTerm) ||
       jeu.nom_jeu.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
+ // Calcul du prix total en fonction du jeu sélectionné et des dates de location
   const [totalPrice, setTotalPrice] = useState(0);
 
+  // Effet pour recalculer le prix total lorsque le jeu sélectionné ou les dates de location changent
   useEffect(() => {
     const calculatePrice = () => {
       const pricePerDay = selectedJeu?.prix || 0;
       const startDate = new Date(rentalDate);
       const endDate = new Date(returnDate);
       const numberOfDays = (endDate - startDate) / (1000 * 60 * 60 * 24);
-
       return pricePerDay * numberOfDays;
     };
 
     setTotalPrice(calculatePrice());
   }, [selectedJeu, rentalDate, returnDate]);
-
+// Effet pour récupérer les jeux depuis l'API 
   useEffect(() => {
     const fetchJeux = async () => {
       try {
@@ -49,22 +52,22 @@ export default function Jeu() {
     setSelectedJeu(jeu);
     setShowRentPage(true);
   };
-
+// Fonction pour gérer le clic sur le bouton "Louer" pour effectuer la location
   const handleLouerClick = async () => {
     try {
       const { id: jeuId } = selectedJeu;
 
-      const response = await fetch('http://localhost:3001/locations', {
-        method: 'POST',
+      const response = await fetch("http://localhost:3001/locations", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           jeuId,
           utilisateurId,
           dateDebut: rentalDate,
           dateFin: returnDate,
-          prix: totalPrice, 
+          prix: totalPrice,
         }),
       });
 
@@ -75,13 +78,13 @@ export default function Jeu() {
         setRentalDate("");
         setReturnDate("");
       } else {
-        console.error('Erreur lors du paiement :', response.statusText);
+        console.error("Erreur lors du paiement :", response.statusText);
       }
     } catch (error) {
-      console.error('Erreur lors du paiement :', error);
+      console.error("Erreur lors du paiement :", error);
     }
   };
-
+ // Retour de l'élément JSX à afficher dans l'interface utilisateur
   return (
     <div>
       <header className="custom-header">
@@ -114,20 +117,33 @@ export default function Jeu() {
       </header>
       <div className="jeux-container">
         {filteredJeux.map((jeu) => (
-          <div key={jeu.id} className="card">
-            <h2>{jeu.nom_jeu}</h2>
-            <p>Prix: {jeu.prix}€</p>
-            <img
-              src={require("../img/add.svg").default}
-              alt="Obtenir"
-              style={{ width: "50px", height: "30px", cursor: "pointer" }}
-              onClick={() => handleObtenirClick(jeu)}
-            />
+          <div
+            key={jeu.id}
+            className="card"
+            style={{
+              backgroundImage: `url(${jeu.lien_image})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }}
+          >
+            <div className="card-content">
+              <h2>{jeu.nom_jeu}</h2>
+              <p>Prix: {jeu.prix}€</p>
+              <img
+                src={require("../img/add.svg").default}
+                alt="Obtenir"
+                style={{ width: "50px", height: "30px", cursor: "pointer" }}
+                onClick={() => handleObtenirClick(jeu)}
+              />
+            </div>
           </div>
         ))}
         {showRentPage && (
           <div className="rent-page">
-            <button className="close-button" onClick={() => setShowRentPage(false)}>
+            <button
+              className="close-button"
+              onClick={() => setShowRentPage(false)}
+            >
               X
             </button>
             <h2>{selectedJeu?.nom_jeu}</h2>
@@ -136,14 +152,18 @@ export default function Jeu() {
             <input
               type="date"
               value={rentalDate}
+              min={new Date().toISOString().split("T")[0]} 
               onChange={(e) => setRentalDate(e.target.value)}
             />
+
             <label>date de retour:</label>
             <input
               type="date"
               value={returnDate}
+              min={new Date().toISOString().split("T")[0]} 
               onChange={(e) => setReturnDate(e.target.value)}
             />
+
             <p>Prix total: {totalPrice}€</p>
             <button onClick={handleLouerClick}>Louer</button>
           </div>

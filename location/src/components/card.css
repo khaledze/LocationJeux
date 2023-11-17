@@ -40,11 +40,19 @@
   transform: scale(1.05);
 }
 
+.card-container img {
+  margin-right: 340px;
+  order: -1; 
+ 
+}
+
 .card-wrapper {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
 }
+
+
 
 .rent-page {
   position: fixed;
@@ -121,6 +129,17 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  background-color: #050505;
+  color: white;
+  padding: 20px 40px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.custom-header1 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 113px;
   background-color: #050505;
   color: white;
   padding: 20px 40px;
