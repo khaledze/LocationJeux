@@ -21,6 +21,31 @@
   transform: scale(1.05);
 }
 
+.card-container {
+  
+  flex-wrap: wrap;
+  justify-content: space-between;
+  border: 1px solid #ddd;
+  padding: 15px;
+  margin: 10px;
+  width: calc(30% - 20px);
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+  background-color: #fff;
+}
+
+.card-container:hover {
+  transform: scale(1.05);
+}
+
+.card-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
 .rent-page {
   position: fixed;
   top: 50%;
