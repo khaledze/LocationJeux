@@ -8,7 +8,8 @@ export default function Jeu() {
   const [showRentPage, setShowRentPage] = useState(false);
   const [rentalDate, setRentalDate] = useState("");
   const [returnDate, setReturnDate] = useState("");
-  const [searchTerm, setSearchTerm] = useState("")
+  const [searchTerm, setSearchTerm] = useState("");
+  const utilisateurId = localStorage.getItem('utilisateurId')
   const filteredJeux = jeux.filter(
     (jeu) =>
       jeu.id.toString().includes(searchTerm) ||
@@ -46,16 +47,37 @@ export default function Jeu() {
 
     const totalPrice = calculatePrice();
 
-    const handleLouerClick = () => {
-      const totalPrice = calculatePrice();
-      console.log(
-        `Game rented from ${rentalDate} to ${returnDate}. Total price: ${totalPrice}€`
-      );
-
-      setShowRentPage(false);
-      setSelectedJeu(null);
-      setRentalDate("");
-      setReturnDate("");
+    const handleLouerClick = async () => {
+      try {
+        const { id: jeuId, nom_jeu, prix } = selectedJeu;
+  
+        const response = await fetch('http://localhost:3001/locations', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            jeuId,
+            utilisateurId,
+            nom_jeu,
+            prix,
+            dateDebut: rentalDate,
+            dateFin: returnDate,
+          }),
+        });
+  
+        if (response.ok) {
+          console.log(`Paiement réussi pour le jeu avec l'ID ${jeuId}`);
+          setShowRentPage(false);
+          setSelectedJeu(null);
+          setRentalDate("");
+          setReturnDate("");
+        } else {
+          console.error('Erreur lors du paiement :', response.statusText);
+        }
+      } catch (error) {
+        console.error('Erreur lors du paiement :', error);
+      }
     };
 
    
@@ -85,27 +107,7 @@ export default function Jeu() {
     );
   };
 
-  const handlePayerClick = async (jeuId) => {
-    try {
-      const response = await fetch('http://localhost:3001/locations', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          jeuId: jeuId,
-        }),
-      });
   
-      if (response.ok) {
-        console.log(`Paiement réussi pour le jeu avec l'ID ${jeuId}`);
-      } else {
-        console.error('Erreur lors du paiement :', response.statusText);
-      }
-    } catch (error) {
-      console.error('Erreur lors du paiement :', error);
-    }
-  };
   
   return (
     <div>
