@@ -95,7 +95,7 @@ export default function CreationPage() {
       </div>
       <button className="button-submit" onClick={handleCreateAccount}>Créer un compte</button>
       <p className="p">
-          You have an account ? <Link to="/connexion"><span className="span">Sign Ip</span></Link>
+          You have an account ? <Link to="/connexion"><span className="span">Sign In</span></Link>
         </p>
     </div>
     </div>
