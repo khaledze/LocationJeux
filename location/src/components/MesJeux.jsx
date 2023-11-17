@@ -18,17 +18,40 @@ export default function MesJeux() {
       setShowReviewForm(true);
     };
 
-    const handleReviewSubmit = () => {
-      // Effectuez ici le traitement de la soumission du commentaire et de la note
-      // par exemple, une requête à votre API pour enregistrer les données
-      // Assurez-vous de gérer la soumission des données correctement
-      console.log(`Comment: ${comment}, Rating: ${rating}`);
-      // Après la soumission, vous pouvez réinitialiser l'état et masquer le formulaire
-      setShowReviewForm(false);
-      setSelectedGameForReview(null);
-      setComment('');
-      setRating(0);
+    const handleReviewSubmit = async (e) => {
+      e.preventDefault();
+      
+      try {
+        const response = await fetch('http://localhost:3001/locations/infos', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            jeuId: selectedGameForReview.id,
+            utilisateurId: localStorage.getItem("utilisateurId"),
+            notes: rating,
+            commentaire: comment,
+          }),
+        });
+      
+        if (response.ok) {
+          console.log('Review submitted successfully');
+        } else {
+          console.error('Failed to submit review:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error submitting review:', error);
+      } finally {
+        setShowReviewForm(false);
+        setSelectedGameForReview(null);
+        setComment('');
+        setRating(0);
+      }
     };
+    
+    
+    
 
     useEffect(() => {
       const fetchJeux = async () => {

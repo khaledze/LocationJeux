@@ -224,6 +224,36 @@ app.post('/locations', async (req, res) => {
     }
   });
 
+  app.post('/locations/infos', async (req, res) => {
+    const { jeuId, utilisateurId, notes, commentaire } = req.body;
+
+    try {
+        const conn = await pool.getConnection();
+
+        const dateQuery = 'SELECT date_debut, date_fin FROM location WHERE jeux_id = ? ORDER BY date_debut DESC LIMIT 1';
+        const dateResult = await conn.query(dateQuery, [jeuId]);
+
+        const dateDebut = dateResult.length > 0 ? dateResult[0].date_debut : new Date();
+        const dateFin = dateResult.length > 0 ? dateResult[0].date_fin : new Date();
+
+        const existingRowQuery = 'SELECT * FROM location WHERE jeux_id = ? AND date_debut = ? AND date_fin = ?';
+        const existingRowResult = await conn.query(existingRowQuery, [jeuId, dateDebut, dateFin]);
+
+        if (existingRowResult.length > 0) {
+            const updateQuery = 'UPDATE location SET notes = ?, commentaire = ? WHERE jeux_id = ? AND date_debut = ? AND date_fin = ?';
+            await conn.query(updateQuery, [notes, commentaire, jeuId, dateDebut, dateFin]);
+        } else {
+            console.log('erreur');
+        }
+
+        res.status(201).json({ success: true, message: 'Location créée avec succès' });
+    } catch (error) {
+        console.error('Erreur lors de la création de la location :', error);
+        res.status(500).json({ success: false, message: 'Erreur interne du serveur' });
+    }
+});
+
+
   
   
   app.get('/locations/utilisateur/:utilisateurId', async (req, res) => {
