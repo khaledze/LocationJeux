@@ -21,10 +21,11 @@ export default function ConnexionPage() {
         },
         body: JSON.stringify(user),
       });
-
+  
       if (response.ok) {
         console.log("Connexion réussie !");
-        localStorage.setItem('user', JSON.stringify(user));
+        const userData = await response.json();
+        localStorage.setItem('utilisateurId', userData.id);
         navigate('/acceuil');
       } else {
         console.error("Échec de la connexion");

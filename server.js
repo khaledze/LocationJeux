@@ -134,32 +134,33 @@ app.post('/connexion', async (req, res) => {
     const { email, password } = req.body;
     let conn;
     try {
-      conn = await pool.getConnection();
-  
-      const result = await conn.query("SELECT * FROM utilisateurs WHERE email = ?", [email]);
-  
-      if (result.length === 0) {
-        res.status(401).send("Adresse e-mail ou mot de passe incorrect");
-        return;
-      }
-  
-      const utilisateurs = result[0];
-      const motDePasseMatch = await bcrypt.compare(password, utilisateurs.mot_de_passe);
-  
-      if (motDePasseMatch) {
-        res.status(200).send("Authentification réussie");
-      } else {
-        res.status(401).send("Adresse e-mail ou mot de passe incorrect");
-      }
+        conn = await pool.getConnection();
+
+        const result = await conn.query("SELECT * FROM utilisateurs WHERE email = ?", [email]);
+
+        if (result.length === 0) {
+            res.status(401).json({ error: "Adresse e-mail ou mot de passe incorrect" });
+            return;
+        }
+
+        const utilisateur = result[0];
+        const motDePasseMatch = await bcrypt.compare(password, utilisateur.mot_de_passe);
+
+        if (motDePasseMatch) {
+            res.status(200).json({ id: utilisateur.id });
+        } else {
+            res.status(401).json({ error: "Adresse e-mail ou mot de passe incorrect" });
+        }
     } catch (err) {
-      console.error("Erreur lors de la vérification de l'authentification :", err);
-      res.status(500).send("Erreur interne du serveur");
+        console.error("Erreur lors de la vérification de l'authentification :", err);
+        res.status(500).json({ error: "Erreur interne du serveur" });
     } finally {
-      if (conn) {
-        conn.release();
-      }
+        if (conn) {
+            conn.release();
+        }
     }
-  });
+});
+
   app.get('/location', async (req, res) => {
     let conn;
     try {
@@ -205,6 +206,49 @@ app.get('/location/:id', async (req, res) => {
         }
     }
 });
+app.post('/locations', async (req, res) => {
+    const { jeuId, utilisateurId } = req.body;
+  
+    try {
+      const conn = await pool.getConnection();
+      const dateDebut = new Date();
+      const dateFin = null;
+      const notes = null;
+      const commentaire = null; 
+  
+      await conn.query(
+        'INSERT INTO location (date_debut, date_fin, notes, commentaire, joueur_id, jeux_id) VALUES (?, ?, ?, ?, ?, ?)',
+        [dateDebut, dateFin, notes, commentaire, utilisateurId, jeuId]
+      );
+  
+      res.status(201).json({ success: true, message: 'Location créée avec succès' });
+    } catch (error) {
+      console.error('Erreur lors de la création de la location :', error);
+      res.status(500).json({ success: false, message: 'Erreur interne du serveur' });
+    }
+});
+
+  
+  
+  app.get('/locations/utilisateur/:utilisateurId', async (req, res) => {
+    let conn;
+    try {
+        conn = await pool.getConnection();
+        const utilisateurId = req.params.joueur_Id;
+
+        const rows = await conn.query("SELECT * FROM location WHERE joueur_id = ?", [utilisateurId]);
+
+        res.status(200).json(rows);
+    } catch (err) {
+        console.error("Erreur lors de la récupération des locations :", err);
+        res.status(500).send("Erreur interne du serveur");
+    } finally {
+        if (conn) {
+            conn.release();
+        }
+    }
+});
+
 app.listen(3001, () => {
     console.log('Serveur démarré'); 
 });
