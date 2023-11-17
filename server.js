@@ -207,14 +207,14 @@ app.get('/location/:id', async (req, res) => {
     }
 });
 app.post('/locations', async (req, res) => {
-    const { jeuId, utilisateurId, dateDebut, dateFin } = req.body;
+    const { jeuId, utilisateurId, dateDebut, dateFin, prix } = req.body;
   
     try {
       const conn = await pool.getConnection();
   
       await conn.query(
-        'INSERT INTO location (jeux_id, joueur_id, date_debut, date_fin) VALUES (?, ?, ?, ?)',
-        [jeuId, utilisateurId, dateDebut, dateFin]
+        'INSERT INTO location (jeux_id, joueur_id, date_debut, date_fin, prix) VALUES (?, ?, ?, ?, ?)',
+        [jeuId, utilisateurId, dateDebut, dateFin, prix]
       );
   
       res.status(201).json({ success: true, message: 'Location créée avec succès' });
@@ -230,7 +230,7 @@ app.post('/locations', async (req, res) => {
     let conn;
     try {
         conn = await pool.getConnection();
-        const utilisateurId = req.params.utilisateurId; // Modifier ici
+        const utilisateurId = req.params.utilisateurId; 
 
         const rows = await conn.query("SELECT * FROM location WHERE joueur_id = ?", [utilisateurId]);
 
