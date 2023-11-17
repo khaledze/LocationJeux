@@ -230,7 +230,7 @@ app.post('/locations', async (req, res) => {
     let conn;
     try {
         conn = await pool.getConnection();
-        const utilisateurId = req.params.joueur_Id;
+        const utilisateurId = req.params.utilisateurId; // Modifier ici
 
         const rows = await conn.query("SELECT * FROM location WHERE joueur_id = ?", [utilisateurId]);
 

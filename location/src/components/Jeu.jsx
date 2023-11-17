@@ -2,33 +2,34 @@ import React, { useEffect, useState } from "react";
 import "./card.css";
 import { Link } from 'react-router-dom';
 
-export default function Jeu() {
-  const [jeux, setJeux] = useState([]);
-  const [selectedJeu, setSelectedJeu] = useState(null);
-  const [showRentPage, setShowRentPage] = useState(false);
-  const [rentalDate, setRentalDate] = useState("");
-  const [returnDate, setReturnDate] = useState("");
-  const [searchTerm, setSearchTerm] = useState("");
-  const utilisateurId = localStorage.getItem('utilisateurId')
-  const filteredJeux = jeux.filter(
-    (jeu) =>
-      jeu.id.toString().includes(searchTerm) ||
-      jeu.nom_jeu.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
-  useEffect(() => {
-    const fetchJeux = async () => {
-      try {
-        const response = await fetch("http://localhost:3001/jeux");
-        const data = await response.json();
-        setJeux(data);
-      } catch (error) {
-        console.error("Erreur lors de la récupération des jeux :", error);
-      }
-    };
-
-    fetchJeux();
-  }, []);
+  export default function Jeu({ utilisateurId }) {
+    const [jeux, setJeux] = useState([]);
+    const [selectedJeu, setSelectedJeu] = useState(null);
+    const [showRentPage, setShowRentPage] = useState(false);
+    const [rentalDate, setRentalDate] = useState("");
+    const [returnDate, setReturnDate] = useState("");
+    const [searchTerm, setSearchTerm] = useState("");
+    
+    const filteredJeux = jeux.filter(
+      (jeu) =>
+        jeu.id.toString().includes(searchTerm) ||
+        jeu.nom_jeu.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+      
+    useEffect(() => {
+      const fetchJeux = async () => {
+        try {
+          const response = await fetch("http://localhost:3001/jeux");
+          const data = await response.json();
+          setJeux(data);
+        } catch (error) {
+          console.error("Erreur lors de la récupération des jeux :", error);
+        }
+      };
+  
+      fetchJeux();
+    }, []);
 
   const handleObtenirClick = (jeu) => {
     setSelectedJeu(jeu);
