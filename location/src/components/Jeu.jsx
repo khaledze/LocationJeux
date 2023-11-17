@@ -77,20 +77,26 @@ export default function Jeu() {
   };
 
   return (
-    <div className="jeux-container">
-      {jeux.map((jeu) => (
-        <div key={jeu.id} className="card">
-          <h2>{jeu.nom_jeu}</h2>
-          <p>Prix: {jeu.prix}€</p>
-          <img
-            src={require("../img/add.svg").default}
-            alt="Obtenir"
-            style={{ width: "50px", height: "30px", cursor: "pointer" }}
-            onClick={() => handleObtenirClick(jeu)}
-          />
-        </div>
-      ))}
-      {showRentPage && renderRentPage()}
+    <div>
+      <header>
+        <h1>Ma Boutique de Jeux</h1>
+        <button className="mes-achats-button">Mes Achats</button>
+      </header>
+      <div className="jeux-container">
+        {jeux.map((jeu) => (
+          <div key={jeu.id} className="card">
+            <h2>{jeu.nom_jeu}</h2>
+            <p>Prix: {jeu.prix}€</p>
+            <img
+              src={require("../img/add.svg").default}
+              alt="Obtenir"
+              style={{ width: "50px", height: "30px", cursor: "pointer" }}
+              onClick={() => handleObtenirClick(jeu)}
+            />
+          </div>
+        ))}
+        {showRentPage && renderRentPage()}
+      </div>
     </div>
   );
-}
+        };  
