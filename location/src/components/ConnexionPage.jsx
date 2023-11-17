@@ -6,6 +6,7 @@ export default function ConnexionPage() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleSignIn = async () => {
     const user = {
@@ -28,6 +29,7 @@ export default function ConnexionPage() {
         navigate('/acceuil');
       } else {
         console.error("Échec de la connexion");
+        setErrorMessage("Mot de passe ou adresse incorrecte.");
       }
     } catch (error) {
       console.error("Erreur lors de la connexion :", error);
@@ -62,7 +64,11 @@ export default function ConnexionPage() {
           />
         </div>
       </div>
-      
+      {errorMessage && (
+          <p className="error-message" style={{ color: 'red', marginTop: '10px' }}>
+            {errorMessage}
+          </p>
+        )}
       <button className="button-submit" onClick={handleSignIn}>Sign In</button>
       <p className="p">
           Don't have an account? <Link to="/creation"><span className="span">Sign Up</span></Link>

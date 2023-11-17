@@ -7,6 +7,12 @@ export default function Jeu() {
   const [showRentPage, setShowRentPage] = useState(false);
   const [rentalDate, setRentalDate] = useState("");
   const [returnDate, setReturnDate] = useState("");
+  const [searchTerm, setSearchTerm] = useState("")
+  const filteredJeux = jeux.filter(
+    (jeu) =>
+      jeu.id.toString().includes(searchTerm) ||
+      jeu.nom_jeu.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   useEffect(() => {
     const fetchJeux = async () => {
@@ -51,6 +57,8 @@ export default function Jeu() {
       setReturnDate("");
     };
 
+   
+
     return (
       <div className="rent-page">
         <button className="close-button" onClick={() => setShowRentPage(false)}>
@@ -78,23 +86,46 @@ export default function Jeu() {
 
   return (
     <div>
-      <header>
+      <header className="custom-header">
         <h1>Ma Boutique de Jeux</h1>
-        <button className="mes-achats-button">Mes Achats</button>
+        <div className="header-right">
+          <button className="mes-achats-button">Mes Achats</button>
+          <div className="form-control">
+  <input
+    type="text"
+    value={searchTerm}
+    onChange={(e) => setSearchTerm(e.target.value)}
+    required
+  />
+  <label>
+    <span style={{ transitionDelay: "0ms" }}>R</span>
+    <span style={{ transitionDelay: "50ms" }}>e</span>
+    <span style={{ transitionDelay: "100ms" }}>c</span>
+    <span style={{ transitionDelay: "150ms" }}>h</span>
+    <span style={{ transitionDelay: "200ms" }}>e</span>
+    <span style={{ transitionDelay: "250ms" }}>r</span>
+    <span style={{ transitionDelay: "300ms" }}>c</span>
+    <span style={{ transitionDelay: "350ms" }}>h</span>
+    <span style={{ transitionDelay: "400ms" }}>e</span>
+    <span style={{ transitionDelay: "450ms" }}>r</span>
+  </label>
+</div>
+
+        </div>
       </header>
       <div className="jeux-container">
-        {jeux.map((jeu) => (
-          <div key={jeu.id} className="card">
-            <h2>{jeu.nom_jeu}</h2>
-            <p>Prix: {jeu.prix}€</p>
-            <img
-              src={require("../img/add.svg").default}
-              alt="Obtenir"
-              style={{ width: "50px", height: "30px", cursor: "pointer" }}
-              onClick={() => handleObtenirClick(jeu)}
-            />
-          </div>
-        ))}
+      {filteredJeux.map((jeu) => (
+        <div key={jeu.id} className="card">
+          <h2>{jeu.nom_jeu}</h2>
+          <p>Prix: {jeu.prix}€</p>
+          <img
+            src={require("../img/add.svg").default}
+            alt="Obtenir"
+            style={{ width: "50px", height: "30px", cursor: "pointer" }}
+            onClick={() => handleObtenirClick(jeu)}
+          />
+        </div>
+      ))}
         {showRentPage && renderRentPage()}
       </div>
     </div>

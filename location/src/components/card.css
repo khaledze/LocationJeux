@@ -84,32 +84,94 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #007bff;
+  background-color: #050505;
   color: white;
   padding: 20px 40px; 
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
 }
 
+.custom-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #050505;
+  color: white;
+  padding: 20px 40px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
 h1 {
   margin: 0;
   font-size: 24px;
-  order: 1;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
 }
 
 .mes-achats-button {
-  background-color: #0056b3;
-  color: white;
+  background-color: #feffff;
+  color: rgb(0, 0, 0);
   border: none;
-  padding: 10px 20px; 
+  padding: 10px 20px;
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  order: 2;
 }
 
 .mes-achats-button:hover {
-  background-color: #004080;
+  background-color: #414242;
 }
+
+.search-bar {
+  margin-left: 10px;
+}
+.form-control {
+  position: relative;
+  margin: 20px 0 40px;
+  width: 250px;
+  margin-left: 20px;
+}
+
+.form-control input {
+  background-color: transparent;
+  border: 0;
+  border-bottom: 2px #fff solid;
+  display: block;
+  width: 100%;
+  padding: 15px 0;
+  font-size: 18px;
+  color: #fff;
+}
+
+.form-control input:focus,
+.form-control input:valid {
+  outline: 0;
+  border-bottom-color: lightblue;
+}
+
+.form-control label {
+  position: absolute;
+  top: 15px;
+  left: 0;
+  pointer-events: none;
+}
+
+.form-control label span {
+  display: inline-block;
+  font-size: 18px;
+  min-width: 5px;
+  color: #fff;
+  transition: 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.form-control input:focus+label span,
+.form-control input:valid+label span {
+  color: lightblue;
+  transform: translateY(-30px);
+}
+
 
 
 
