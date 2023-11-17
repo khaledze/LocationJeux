@@ -90,7 +90,10 @@ export default function MesJeux() {
   return (
     <div>
       <header className="custom-header1">
-        <h1>Ma Boutique de Jeux</h1>
+        <h1>
+          <Link to="/acceuil">Ma Boutique de Jeux</Link>
+        </h1>
+       
         <div className="header-right">
           <Link to="/acceuil">
             <button className="mes-achats-button">Accueil</button>
@@ -99,22 +102,32 @@ export default function MesJeux() {
       </header>
       <div className="card-wrapper">
         {jeuxDansLocations.map((location) => (
-          <div key={location.id} className="card-container">
+          <div
+            key={location.id}
+            className="card-container"
+            style={{
+              backgroundImage: `url(${location.jeu.lien_image})`,
+              backgroundSize: "cover",
+              position: "relative",
+            }}
+          >
             {location.jeu && (
-              <div>
+              <div className="card-content">
                 <h2>{location.jeu.nom_jeu}</h2>
+                <p>Date de début: {location.date_debut}</p>
+                <p>Date de fin: {location.date_fin}</p>
+                <p>Prix: {location.prix}€</p>
+                <div className="card-image">
+                  <img
+                    src={require("../img/cmt.svg").default}
+                    alt="Obtenir"
+                    className="obtenir-icon"
+                    onClick={() => handleReviewClick(location.jeu)}
+                    style={{ height: "30px", width: "30px", cursor: "pointer" }}
+                  />
+                </div>
               </div>
             )}
-            <p>Date de début: {location.date_debut}</p>
-            <p>Date de fin: {location.date_fin}</p>
-            <p>Prix: {location.prix}€</p>
-            <img
-              src={require("../img/cmt.svg").default}
-              alt="Obtenir"
-              className="obtenir-icon"
-              onClick={() => handleReviewClick(location.jeu)}
-              style={{ height: "30px", width: "30px", cursor: "pointer" }}
-            />
           </div>
         ))}
       </div>
