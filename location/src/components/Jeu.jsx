@@ -9,12 +9,27 @@ export default function Jeu() {
   const [rentalDate, setRentalDate] = useState("");
   const [returnDate, setReturnDate] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-  const utilisateurId = localStorage.getItem('utilisateurId')
+  const utilisateurId = localStorage.getItem('utilisateurId');
   const filteredJeux = jeux.filter(
     (jeu) =>
       jeu.id.toString().includes(searchTerm) ||
       jeu.nom_jeu.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const [totalPrice, setTotalPrice] = useState(0);
+
+  useEffect(() => {
+    const calculatePrice = () => {
+      const pricePerDay = selectedJeu?.prix || 0;
+      const startDate = new Date(rentalDate);
+      const endDate = new Date(returnDate);
+      const numberOfDays = (endDate - startDate) / (1000 * 60 * 60 * 24);
+
+      return pricePerDay * numberOfDays;
+    };
+
+    setTotalPrice(calculatePrice());
+  }, [selectedJeu, rentalDate, returnDate]);
 
   useEffect(() => {
     const fetchJeux = async () => {
@@ -35,126 +50,105 @@ export default function Jeu() {
     setShowRentPage(true);
   };
 
-  const renderRentPage = () => {
-    const calculatePrice = () => {
-      const pricePerDay = selectedJeu?.prix || 0;
-      const startDate = new Date(rentalDate);
-      const endDate = new Date(returnDate);
-      const numberOfDays = (endDate - startDate) / (1000 * 60 * 60 * 24);
+  const handleLouerClick = async () => {
+    try {
+      const { id: jeuId } = selectedJeu;
 
-      return pricePerDay * numberOfDays;
-    };
+      const response = await fetch('http://localhost:3001/locations', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          jeuId,
+          utilisateurId,
+          dateDebut: rentalDate,
+          dateFin: returnDate,
+          prix: totalPrice, // Send the total price to the server
+        }),
+      });
 
-    const totalPrice = calculatePrice();
-
-    const handleLouerClick = async () => {
-      try {
-        const { id: jeuId, nom_jeu, prix } = selectedJeu;
-  
-        const response = await fetch('http://localhost:3001/locations', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            jeuId,
-            utilisateurId,
-            nom_jeu,
-            prix,
-            dateDebut: rentalDate,
-            dateFin: returnDate,
-          }),
-        });
-  
-        if (response.ok) {
-          console.log(`Paiement réussi pour le jeu avec l'ID ${jeuId}`);
-          setShowRentPage(false);
-          setSelectedJeu(null);
-          setRentalDate("");
-          setReturnDate("");
-        } else {
-          console.error('Erreur lors du paiement :', response.statusText);
-        }
-      } catch (error) {
-        console.error('Erreur lors du paiement :', error);
+      if (response.ok) {
+        console.log(`Paiement réussi pour le jeu avec l'ID ${jeuId}`);
+        setShowRentPage(false);
+        setSelectedJeu(null);
+        setRentalDate("");
+        setReturnDate("");
+      } else {
+        console.error('Erreur lors du paiement :', response.statusText);
       }
-    };
-
-   
-
-    return (
-      <div className="rent-page">
-        <button className="close-button" onClick={() => setShowRentPage(false)}>
-          X
-        </button>
-        <h2>{selectedJeu?.nom_jeu}</h2>
-        <p>Price: {selectedJeu?.prix}€</p>
-        <label>Rental date:</label>
-        <input
-          type="date"
-          value={rentalDate}
-          onChange={(e) => setRentalDate(e.target.value)}
-        />
-        <label>Return date:</label>
-        <input
-          type="date"
-          value={returnDate}
-          onChange={(e) => setReturnDate(e.target.value)}
-        />
-        <p>Total price: {totalPrice}€</p>
-        <button onClick={handleLouerClick}>Rent</button>
-      </div>
-    );
+    } catch (error) {
+      console.error('Erreur lors du paiement :', error);
+    }
   };
 
-  
-  
   return (
     <div>
       <header className="custom-header">
         <h1>Ma Boutique de Jeux</h1>
         <div className="header-right">
-        <Link to="/mes-jeux">
-    <button className="mes-achats-button">Mes Achats</button>
-  </Link>
+          <Link to="/mes-jeux">
+            <button className="mes-achats-button">Mes Achats</button>
+          </Link>
           <div className="form-control">
-  <input
-    type="text"
-    value={searchTerm}
-    onChange={(e) => setSearchTerm(e.target.value)}
-    required
-  />
-  <label>
-    <span style={{ transitionDelay: "0ms" }}>R</span>
-    <span style={{ transitionDelay: "50ms" }}>e</span>
-    <span style={{ transitionDelay: "100ms" }}>c</span>
-    <span style={{ transitionDelay: "150ms" }}>h</span>
-    <span style={{ transitionDelay: "200ms" }}>e</span>
-    <span style={{ transitionDelay: "250ms" }}>r</span>
-    <span style={{ transitionDelay: "300ms" }}>c</span>
-    <span style={{ transitionDelay: "350ms" }}>h</span>
-    <span style={{ transitionDelay: "400ms" }}>e</span>
-    <span style={{ transitionDelay: "450ms" }}>r</span>
-  </label>
-</div>
-
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              required
+            />
+            <label>
+              <span style={{ transitionDelay: "0ms" }}>R</span>
+              <span style={{ transitionDelay: "50ms" }}>e</span>
+              <span style={{ transitionDelay: "100ms" }}>c</span>
+              <span style={{ transitionDelay: "150ms" }}>h</span>
+              <span style={{ transitionDelay: "200ms" }}>e</span>
+              <span style={{ transitionDelay: "250ms" }}>r</span>
+              <span style={{ transitionDelay: "300ms" }}>c</span>
+              <span style={{ transitionDelay: "350ms" }}>h</span>
+              <span style={{ transitionDelay: "400ms" }}>e</span>
+              <span style={{ transitionDelay: "450ms" }}>r</span>
+            </label>
+          </div>
         </div>
       </header>
       <div className="jeux-container">
-      {filteredJeux.map((jeu) => (
-        <div key={jeu.id} className="card">
-          <h2>{jeu.nom_jeu}</h2>
-          <p>Prix: {jeu.prix}€</p>
-          <img
-            src={require("../img/add.svg").default}
-            alt="Obtenir"
-            style={{ width: "50px", height: "30px", cursor: "pointer" }}
-            onClick={() => handleObtenirClick(jeu)}
-          />
-        </div>
-      ))}
-        {showRentPage && renderRentPage()}
+        {filteredJeux.map((jeu) => (
+          <div key={jeu.id} className="card">
+            <h2>{jeu.nom_jeu}</h2>
+            <p>Prix: {jeu.prix}€</p>
+            <img
+              src={require("../img/add.svg").default}
+              alt="Obtenir"
+              style={{ width: "50px", height: "30px", cursor: "pointer" }}
+              onClick={() => handleObtenirClick(jeu)}
+            />
+          </div>
+        ))}
+        {showRentPage && (
+          <div className="rent-page">
+            <button className="close-button" onClick={() => setShowRentPage(false)}>
+              X
+            </button>
+            <h2>{selectedJeu?.nom_jeu}</h2>
+            <p>Price: {selectedJeu?.prix}€</p>
+            <label>Rental date:</label>
+            <input
+              type="date"
+              value={rentalDate}
+              onChange={(e) => setRentalDate(e.target.value)}
+            />
+            <label>Return date:</label>
+            <input
+              type="date"
+              value={returnDate}
+              onChange={(e) => setReturnDate(e.target.value)}
+            />
+            <p>Total price: {totalPrice}€</p>
+            <button onClick={handleLouerClick}>Rent</button>
+          </div>
+        )}
       </div>
     </div>
   );
-        };  
+}
