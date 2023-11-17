@@ -4,12 +4,15 @@ import { Link, useNavigate } from "react-router-dom";
 
 export default function CreationPage() {
   const navigate = useNavigate();
+  // Initialisation des états pour la création de compte
   const [prenom, setPrenom] = useState("");
   const [nom, setNom] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  // Fonction pour gérer la création du compte utilisateur
   const handleCreateAccount = async () => {
+    // Création d'un objet utilisateur avec les informations saisies
     const user = {
       prenom: prenom,
       nom: nom,
@@ -18,6 +21,7 @@ export default function CreationPage() {
     };
 
     try {
+      // Envoi d'une requête POST à l'API pour créer l'utilisateur
       const response = await fetch("http://localhost:3001/utilisateurs", {
         method: "POST",
         headers: {
@@ -25,18 +29,20 @@ export default function CreationPage() {
         },
         body: JSON.stringify(user),
       });
-
+      // Vérification de la réponse de l'API
       if (response.ok) {
+        // Utilisateur créé avec succès, redirection vers la page de connexion
         console.log("Utilisateur créé avec succès !");
         navigate('/connexion');
       } else {
+        // Échec de la création de l'utilisateur, affichage d'une erreur
         console.error("Échec de la création de l'utilisateur");
       }
     } catch (error) {
       console.error("Erreur lors de la création de l'utilisateur :", error);
     }
   };
-
+  // Visuel de la page de création de compte
   return (
     <div className="login-page">
     <div className="form">
