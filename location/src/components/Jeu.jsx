@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./card.css";
+import { Link } from 'react-router-dom';
 
 export default function Jeu() {
   const [jeux, setJeux] = useState([]);
@@ -84,12 +85,36 @@ export default function Jeu() {
     );
   };
 
+  const handlePayerClick = async (jeuId) => {
+    try {
+      const response = await fetch('http://localhost:3001/locations', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          jeuId: jeuId,
+        }),
+      });
+  
+      if (response.ok) {
+        console.log(`Paiement réussi pour le jeu avec l'ID ${jeuId}`);
+      } else {
+        console.error('Erreur lors du paiement :', response.statusText);
+      }
+    } catch (error) {
+      console.error('Erreur lors du paiement :', error);
+    }
+  };
+  
   return (
     <div>
       <header className="custom-header">
         <h1>Ma Boutique de Jeux</h1>
         <div className="header-right">
-          <button className="mes-achats-button">Mes Achats</button>
+        <Link to="/mes-jeux">
+    <button className="mes-achats-button">Mes Achats</button>
+  </Link>
           <div className="form-control">
   <input
     type="text"
