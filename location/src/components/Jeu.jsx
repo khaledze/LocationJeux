@@ -11,14 +11,12 @@ export default function Jeu() {
   const [searchTerm, setSearchTerm] = useState(""); // Terme de recherche pour filtrer les jeux
   const utilisateurId = localStorage.getItem("utilisateurId"); // Récupération de l'ID de l'utilisateur depuis le stockage local
 
-
   // Filtrage des jeux en fonction du terme de recherche
   const filteredJeux = jeux.filter(
     (jeu) =>
-      jeu.id.toString().includes(searchTerm) ||
       jeu.nom_jeu.toLowerCase().includes(searchTerm.toLowerCase())
   );
- // Calcul du prix total en fonction du jeu sélectionné et des dates de location
+  // Calcul du prix total en fonction du jeu sélectionné et des dates de location
   const [totalPrice, setTotalPrice] = useState(0);
 
   // Effet pour recalculer le prix total lorsque le jeu sélectionné ou les dates de location changent
@@ -33,7 +31,7 @@ export default function Jeu() {
 
     setTotalPrice(calculatePrice());
   }, [selectedJeu, rentalDate, returnDate]);
-// Effet pour récupérer les jeux depuis l'API 
+  // Effet pour récupérer les jeux depuis l'API
   useEffect(() => {
     const fetchJeux = async () => {
       try {
@@ -52,7 +50,7 @@ export default function Jeu() {
     setSelectedJeu(jeu);
     setShowRentPage(true);
   };
-// Fonction pour gérer le clic sur le bouton "Louer" pour effectuer la location
+  // Fonction pour gérer le clic sur le bouton "Louer" pour effectuer la location
   const handleLouerClick = async () => {
     try {
       const { id: jeuId } = selectedJeu;
@@ -84,11 +82,19 @@ export default function Jeu() {
       console.error("Erreur lors du paiement :", error);
     }
   };
- // Retour de l'élément JSX à afficher dans l'interface utilisateur
+  // Retour de l'élément JSX à afficher dans l'interface utilisateur
   return (
     <div>
       <header className="custom-header">
-        <h1>Ma Boutique de Jeux</h1>
+        <h1>
+          <Link to="/acceuil">Ma Boutique de Jeux</Link>
+        </h1>
+        <div className="deconnexion-container">
+        <Link to="/connexion" className="deconnexion-link">
+          <button className="deconnexion-button">Déconnexion</button>
+        </Link>
+        </div>
+
         <div className="header-right">
           <Link to="/mes-jeux">
             <button className="mes-achats-button">Mes Achats</button>
@@ -123,7 +129,7 @@ export default function Jeu() {
             style={{
               backgroundImage: `url(${jeu.lien_image})`,
               backgroundSize: "cover",
-              backgroundPosition: "center",
+              position: "relative",
             }}
           >
             <div className="card-content">
@@ -132,7 +138,15 @@ export default function Jeu() {
               <img
                 src={require("../img/add.svg").default}
                 alt="Obtenir"
-                style={{ width: "50px", height: "30px", cursor: "pointer" }}
+                style={{
+                  width: "50px",
+                  height: "30px",
+                  cursor: "pointer",
+                  alignSelf: "flex-end",
+                  marginRight: "370px",
+                  borderRadius: "10px",
+                  padding: "10px",
+                }}
                 onClick={() => handleObtenirClick(jeu)}
               />
             </div>
@@ -152,7 +166,7 @@ export default function Jeu() {
             <input
               type="date"
               value={rentalDate}
-              min={new Date().toISOString().split("T")[0]} 
+              min={new Date().toISOString().split("T")[0]}
               onChange={(e) => setRentalDate(e.target.value)}
             />
 
@@ -160,7 +174,7 @@ export default function Jeu() {
             <input
               type="date"
               value={returnDate}
-              min={new Date().toISOString().split("T")[0]} 
+              min={new Date().toISOString().split("T")[0]}
               onChange={(e) => setReturnDate(e.target.value)}
             />
 
