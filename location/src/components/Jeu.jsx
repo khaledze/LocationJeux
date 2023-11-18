@@ -147,83 +147,85 @@ export default function Jeu() {
           <Link to="/connexion" className="deconnexion-link">
             <button className="test">
               Deconnexion
-              <div class="arrow-wrapper">
-                <div class="arrow"></div>
-              </div>
+            
+              
             </button>
           </Link>
         </div>
       </header>
       <div className="jeux-container">
-        {filteredJeux.map((jeu) => (
-          <div
-            key={jeu.id}
-            className="card"
-            style={{
-              backgroundImage: `url(${jeu.lien_image})`,
-              backgroundSize: "cover",
-              position: "relative",
-            }}
-          >
-            <div className="card-content">
-              <h2>{jeu.nom_jeu}</h2>
-              <p>Prix: {jeu.prix}€</p>
-              <div className="button-container">
-                <img
-                  src={require("../img/add.svg").default}
-                  alt="Obtenir"
-                  style={{
-                    width: "50px",
-                    height: "30px",
-                    cursor: "pointer",
-                    alignSelf: "flex-end",
-                    marginRight: "370px",
-                    borderRadius: "10px",
-                    padding: "10px",
-                  }}
-                  onClick={() => handleObtenirClick(jeu)}
-                />
-                <img
-                  src={require("../img/acmt.svg").default}
-                  alt="afficher les commentaires"
-                  onClick={() => {
-                    handleAfficherCommentairesClick(jeu);
-                    setShowRentPage(false);
-                  }}
-                  style={{
-                    width: "50px",
-                    height: "30px",
-                    cursor: "pointer",
-                    alignSelf: "flex-end",
-                    marginRight: "370px",
-                    borderRadius: "10px",
-                    padding: "10px",
-                  }}
-                />
-              </div>
-
-              {selectedJeuForComments === jeu.id && showComments && (
-                <div>
-                  <h3>Commentaires :</h3>
-                  <ul>
-                    {comments.map((comment) => (
-                      <li key={comment.id}>
-                        <strong>
-                          {comment.nom} {comment.prenom}:
-                        </strong>{" "}
-                        {comment.commentaire}
-                      </li>
-                    ))}
-                  </ul>
-                  <p>
-                    Moyenne générale des notes :{" "}
-                    {comments[0]?.moyenne_notes || "Aucune note"}
-                  </p>
+        {filteredJeux &&
+          filteredJeux.length > 0 &&
+          filteredJeux.map((jeu) => (
+            <div
+              key={jeu.id}
+              className="card"
+              style={{
+                backgroundImage:
+                  jeu && jeu.lien_image ? `url(${jeu.lien_image})` : "",
+                backgroundSize: "cover",
+                position: "relative",
+              }}
+            >
+              <div className="card-content">
+                <h2>{jeu.nom_jeu}</h2>
+                <p>Prix: {jeu.prix}€</p>
+                <div className="button-container">
+                  <img
+                    src={require("../img/add.svg").default}
+                    alt="Obtenir"
+                    style={{
+                      width: "50px",
+                      height: "30px",
+                      cursor: "pointer",
+                      alignSelf: "flex-end",
+                      marginRight: "370px",
+                      borderRadius: "10px",
+                      padding: "10px",
+                    }}
+                    onClick={() => handleObtenirClick(jeu)}
+                  />
+                  <img
+                    src={require("../img/acmt.svg").default}
+                    alt="afficher les commentaires"
+                    onClick={() => {
+                      handleAfficherCommentairesClick(jeu);
+                      setShowRentPage(false);
+                    }}
+                    style={{
+                      width: "50px",
+                      height: "30px",
+                      cursor: "pointer",
+                      alignSelf: "flex-end",
+                      marginRight: "370px",
+                      borderRadius: "10px",
+                      padding: "10px",
+                    }}
+                  />
                 </div>
-              )}
+
+                {selectedJeuForComments === jeu.id && showComments && (
+                  <div>
+                    <h3>Commentaires :</h3>
+                    <ul>
+                      {comments.map((comment) => (
+                        <li key={comment.id}>
+                          <strong>
+                            {comment.nom} {comment.prenom}:
+                          </strong>{" "}
+                          {comment.commentaire}
+                        </li>
+                      ))}
+                    </ul>
+                    <p>
+                      Moyenne générale des notes :{" "}
+                      {comments[0]?.moyenne_notes || "Aucune note"}
+                    </p>
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
 
         {showRentPage && (
           <div className="rent-page">

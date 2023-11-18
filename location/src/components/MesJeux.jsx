@@ -182,7 +182,7 @@ export default function MesJeux() {
             className="close-button"
             onClick={() => setShowReviewForm(false)}
           >
-            Fermer
+            x
           </button>
         </div>
       )}
