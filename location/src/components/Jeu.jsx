@@ -119,17 +119,8 @@ export default function Jeu() {
         </h1>
 
         <div className="header-right">
-          <Link to="/connexion" className="deconnexion-link">
-            <button className="test">
-              Deconnexion
-              <div class="arrow-wrapper">
-                <div class="arrow"></div>
-              </div>
-            </button>
-          </Link>
-          <Link to="/mes-jeux">
-            <button className="test">Mes Achats</button>
-          </Link>
+          
+         
           <div className="form-control">
             <input
               type="text"
@@ -150,6 +141,17 @@ export default function Jeu() {
               <span style={{ transitionDelay: "450ms" }}>r</span>
             </label>
           </div>
+          <Link to="/mes-jeux">
+            <button className="test">Mes Achats</button>
+          </Link>
+          <Link to="/connexion" className="deconnexion-link">
+            <button className="test">
+              Deconnexion
+              <div class="arrow-wrapper">
+                <div class="arrow"></div>
+              </div>
+            </button>
+          </Link>
         </div>
       </header>
       <div className="jeux-container">
