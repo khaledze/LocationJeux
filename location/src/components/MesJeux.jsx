@@ -126,8 +126,8 @@ const handleReviewSubmit = async (e) => {
             {location.jeu && (
               <div className="card-content">
                 <h2>{location.jeu.nom_jeu}</h2>
-                <p>Date de début: {location.date_debut}</p>
-                <p>Date de fin: {location.date_fin}</p>
+                <p>Date de début: {new Date(location.date_debut).toLocaleDateString()}</p>
+                <p>Date de fin: {new Date(location.date_fin).toLocaleDateString()}</p>
                 <p>Prix: {location.prix}€</p>
                 <div className="card-image">
                   <img
