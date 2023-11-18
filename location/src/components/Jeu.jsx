@@ -188,6 +188,7 @@ const [selectedJeuForComments, setSelectedJeuForComments] = useState(null);
                 </li>
               ))}
             </ul>
+            <p>Moyenne générale des notes : {comments.length > 0 ? (comments[0]?.notes > 0 ? comments[0]?.moyenne_notes || 'Aucune note' : 'Aucune note') : 'Aucune note'}</p>
           </div>
         )}
     </div>

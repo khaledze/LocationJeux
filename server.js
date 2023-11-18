@@ -229,7 +229,7 @@ app.post('/locations', async (req, res) => {
     }
   });
 // Enregistre les informations spécifiques sur une location (notes, commentaires, etc.).
-  app.post('/locations/infos', async (req, res) => {
+app.post('/locations/infos', async (req, res) => {
     const { jeuId, utilisateurId, notes, commentaire } = req.body;
 
     try {
@@ -245,18 +245,32 @@ app.post('/locations', async (req, res) => {
         const existingRowResult = await conn.query(existingRowQuery, [jeuId, dateDebut, dateFin]);
 
         if (existingRowResult.length > 0) {
-            const updateQuery = 'UPDATE location SET notes = ?, commentaire = ? WHERE jeux_id = ? AND date_debut = ? AND date_fin = ?';
-            await conn.query(updateQuery, [notes, commentaire, jeuId, dateDebut, dateFin]);
-        } else {
-            console.log('erreur');
+            const existingRow = existingRowResult[0];
+            
+            // Vérifier si les notes et le commentaire ont changé
+            const notesChanged = existingRow.notes !== notes;
+            const commentaireChanged = existingRow.commentaire !== commentaire;
+
+            // Vérifier si les notes et le commentaire sont définis et non vides
+            const newNotes = typeof notes === 'string' && notes.trim() !== '' ? notes.trim() : null;
+            const newCommentaire = typeof commentaire === 'string' && commentaire.trim() !== '' ? commentaire.trim() : null;
+
+            if (notesChanged || commentaireChanged) {
+                // Effectuer la mise à jour uniquement si les valeurs ont changé
+                const updateQuery = 'UPDATE location SET notes = ?, commentaire = ? WHERE jeux_id = ? AND date_debut = ? AND date_fin = ?';
+                await conn.query(updateQuery, [newNotes, newCommentaire, jeuId, dateDebut, dateFin]);
+            }
         }
 
         res.status(201).json({ success: true, message: 'Location créée avec succès' });
     } catch (error) {
-        console.error('Erreur lors de la création de la location :', error);
+        console.error('Erreur lors de la création ou de la mise à jour de la location :', error);
         res.status(500).json({ success: false, message: 'Erreur interne du serveur' });
     }
 });
+
+
+
 
 
   
@@ -286,10 +300,20 @@ app.get('/locations/jeu/:jeuId', async (req, res) => {
         const jeuId = req.params.jeuId;
 
         const query = `
-            SELECT location.*, utilisateurs.nom, utilisateurs.prenom
-            FROM location
-            JOIN utilisateurs ON location.joueur_id = utilisateurs.id
-            WHERE location.jeux_id = ? AND location.commentaire IS NOT NULL
+        SELECT
+            location.*,
+            utilisateurs.nom,
+            utilisateurs.prenom,
+            utilisateurs.id as utilisateur_id,
+            ROUND(AVG(CASE WHEN location.notes IS NOT NULL THEN location.notes ELSE 0 END), 1) as moyenne_notes
+        FROM
+            location
+        JOIN
+            utilisateurs ON location.joueur_id = utilisateurs.id
+        WHERE
+            location.jeux_id = ? AND (location.commentaire IS NOT NULL OR location.notes IS NOT NULL)
+        GROUP BY
+            utilisateurs.id;
         `;
 
         const rows = await conn.query(query, [jeuId]);
