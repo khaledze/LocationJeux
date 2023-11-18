@@ -16,7 +16,7 @@ export default function MesJeux() {
     setSelectedGameForReview(jeu);
     setShowReviewForm(true);
   };
-  // Fonction pour soumettre l'avis sur un jeu
+ 
   // Fonction pour soumettre l'avis sur un jeu
   const handleReviewSubmit = async (e) => {
     e.preventDefault();
@@ -28,23 +28,22 @@ export default function MesJeux() {
       );
       return;
     }
-
+    console.log("Jeu:", selectedGameForReview);
     try {
-      const response = await fetch("http://localhost:3001/locations/infos", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          jeuId: selectedGameForReview.id,
-          utilisateurId: localStorage.getItem("utilisateurId"),
-          notes: rating,
-          commentaire: comment,
-        }),
-      });
+      const response = await fetch(`http://localhost:3001/locations/infos/${localStorage.getItem("utilisateurId")}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        jeuId: selectedGameForReview.id,
+        utilisateurId: localStorage.getItem("utilisateurId"),
+        notes: rating,
+        commentaire: comment,
+      }),
+    });
 
       if (response.ok) {
-        // Note et/ou commentaire ajouté avec succès, afficher une alerte
         alert("Note et/ou commentaire ajouté avec succès!");
         console.log("Review submitted successfully");
       } else {

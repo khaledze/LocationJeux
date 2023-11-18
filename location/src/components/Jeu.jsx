@@ -12,6 +12,9 @@ export default function Jeu() {
   const [comments, setComments] = useState([]);
   const [showComments, setShowComments] = useState(false);
   const [selectedJeuForComments, setSelectedJeuForComments] = useState(null);
+  const [averageNotes, setAverageNotes] = useState(null);
+  const [notesArray, setNotesArray] = useState([]);
+
 
   const utilisateurId = localStorage.getItem("utilisateurId"); // Récupération de l'ID de l'utilisateur depuis le stockage local
 
@@ -57,24 +60,33 @@ export default function Jeu() {
 
   const handleAfficherCommentairesClick = async (jeu) => {
     try {
-      const response = await fetch(
-        `http://localhost:3001/locations/jeu/${jeu.id}`
-      );
+      const response = await fetch(`http://localhost:3001/locations/jeu/${jeu.id}`);
       const data = await response.json();
-
+  
       console.log("Comments data:", data);
       const commentsWithUsernames = data.map((comment) => ({
         ...comment,
         nomUtilisateur: comment.utilisateur_nom,
       }));
-
+  
       setComments(commentsWithUsernames);
+  
+      const newNotesArray = commentsWithUsernames.map((comment) => comment.notes);
+      setNotesArray(newNotesArray);
+  
+      const filteredNotesArray = newNotesArray.filter((note) => !isNaN(note));
+      const average = filteredNotesArray.length > 0 ? filteredNotesArray.reduce((acc, value) => acc + parseFloat(value), 0) / filteredNotesArray.length : null;
+  
+      setAverageNotes(average);
+  
       setSelectedJeuForComments(jeu.id);
       setShowComments(!showComments);
     } catch (error) {
       console.error("Erreur lors de la récupération des commentaires :", error);
     }
   };
+  
+  
 
   // Fonction pour gérer le clic sur le bouton "Louer" pour effectuer la location
   const handleLouerClick = async () => {
@@ -154,54 +166,67 @@ export default function Jeu() {
         </div>
       </header>
       <div className="jeux-container">
-        {filteredJeux &&
-          filteredJeux.length > 0 &&
-          filteredJeux.map((jeu) => (
-            <div
-              key={jeu.id}
-              className="card"
-              style={{
-                backgroundImage:
-                  jeu && jeu.lien_image ? `url(${jeu.lien_image})` : "",
-                backgroundSize: "cover",
-                position: "relative",
-              }}
-            >
-              <div className="card-content">
-                <h2>{jeu.nom_jeu}</h2>
-                <p>Prix: {jeu.prix}€</p>
-                <div className="button-container">
-                  <img
-                    src={require("../img/add.svg").default}
-                    alt="Obtenir"
-                    style={{
-                      width: "50px",
-                      height: "30px",
-                      cursor: "pointer",
-                      alignSelf: "flex-end",
-                      marginRight: "370px",
-                      borderRadius: "10px",
-                      padding: "10px",
-                    }}
-                    onClick={() => handleObtenirClick(jeu)}
-                  />
-                  <img
-                    src={require("../img/acmt.svg").default}
-                    alt="afficher les commentaires"
-                    onClick={() => {
-                      handleAfficherCommentairesClick(jeu);
-                      setShowRentPage(false);
-                    }}
-                    style={{
-                      width: "50px",
-                      height: "30px",
-                      cursor: "pointer",
-                      alignSelf: "flex-end",
-                      marginRight: "370px",
-                      borderRadius: "10px",
-                      padding: "10px",
-                    }}
-                  />
+        {filteredJeux.map((jeu) => (
+          <div
+            key={jeu.id}
+            className="card"
+            style={{
+              backgroundImage: `url(${jeu.lien_image})`,
+              backgroundSize: "cover",
+              position: "relative",
+            }}
+          >
+            <div className="card-content">
+              <h2>{jeu.nom_jeu}</h2>
+              <p>Prix: {jeu.prix}€</p>
+              <div className="button-container">
+                <img
+                  src={require("../img/add.svg").default}
+                  alt="Obtenir"
+                  style={{
+                    width: "50px",
+                    height: "30px",
+                    cursor: "pointer",
+                    alignSelf: "flex-end",
+                    marginRight: "370px",
+                    borderRadius: "10px",
+                    padding: "10px",
+                  }}
+                  onClick={() => handleObtenirClick(jeu)}
+                />
+                <img
+                  src={require("../img/acmt.svg").default}
+                  alt="afficher les commentaires"
+                  onClick={() => {
+                    handleAfficherCommentairesClick(jeu);
+                    setShowRentPage(false);
+                  }}
+                  style={{
+                    width: "50px",
+                    height: "30px",
+                    cursor: "pointer",
+                    alignSelf: "flex-end",
+                    marginRight: "370px",
+                    borderRadius: "10px",
+                    padding: "10px",
+                  }}
+                />
+              </div>
+
+              {selectedJeuForComments === jeu.id && showComments && (
+                <div>
+                  <h3>Commentaires :</h3>
+                  <ul>
+                    {comments.map((comment) => (
+                      <li key={comment.id}>
+                        <strong>
+                          {comment.nom} {comment.prenom}:
+                        </strong>{" "}
+                        {comment.commentaire}
+                      </li>
+                    ))}
+                  </ul>
+                  <p>Moyenne générale des notes : {averageNotes !== null ? averageNotes : "Aucune note"}</p>
                 </div>
 
                 {selectedJeuForComments === jeu.id && showComments && (
