@@ -162,7 +162,7 @@ const handleReviewSubmit = async (e) => {
               value={rating}
               onChange={(e) => setRating(e.target.value)}
             />
-            <button type="submit">Envoyer</button>
+            <button className="location" type="submit">Envoyer</button>
           </form>
           <button
             className="close-button"

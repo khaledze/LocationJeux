@@ -247,7 +247,7 @@ export default function Jeu() {
             />
 
             <p>Prix total: {totalPrice}€</p>
-            <button onClick={handleLouerClick}>Louer</button>
+            <button className="location" onClick={handleLouerClick}>Louer</button>
           </div>
         )}
       </div>
