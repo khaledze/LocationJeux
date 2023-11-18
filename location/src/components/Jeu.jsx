@@ -50,16 +50,13 @@ export default function Jeu() {
     fetchJeux();
   }, []);
 
-  const handleObtenirClick = async (jeu) => {
+  const handleObtenirClick = (jeu) => {
     setSelectedJeu(jeu);
-  
-    if (selectedJeuForComments === jeu.id) {
-      setShowComments(false);
-      setSelectedJeuForComments(null);
-      setComments([]);
-      return;
-    }
-  
+    setShowRentPage(true);
+    setShowComments(false); // Ajoutez cette ligne pour masquer les commentaires
+  };
+
+  const handleAfficherCommentairesClick = async (jeu) => {
     try {
       const response = await fetch(
         `http://localhost:3001/locations/jeu/${jeu.id}`
@@ -80,6 +77,7 @@ export default function Jeu() {
     }
   };
   
+  // Fonction pour gérer le clic sur le bouton "Louer" pour effectuer la location
   const handleLouerClick = async () => {
     try {
       const { id: jeuId } = selectedJeu;
@@ -186,7 +184,7 @@ export default function Jeu() {
                 src={require("../img/acmt.svg").default}
                 alt="afficher les commentaires"
                 onClick={() => {
-                  handleObtenirClick(jeu);
+                  handleAfficherCommentairesClick(jeu);
                   setShowRentPage(false);
                 }}
                 style={{
