@@ -229,14 +229,14 @@ app.post('/locations', async (req, res) => {
     }
   });
 // Enregistre les informations spécifiques sur une location (notes, commentaires, etc.).
-app.post('/locations/infos', async (req, res) => {
+app.post('/locations/infos/:utilisateurId', async (req, res) => {
     const { jeuId, utilisateurId, notes, commentaire } = req.body;
 
     try {
         const conn = await pool.getConnection();
 
-        const dateQuery = 'SELECT date_debut, date_fin FROM location WHERE jeux_id = ? ORDER BY date_debut DESC LIMIT 1';
-        const dateResult = await conn.query(dateQuery, [jeuId]);
+        const dateQuery = 'SELECT date_debut, date_fin FROM location WHERE jeux_id = ? AND joueur_id = ? ORDER BY date_debut DESC LIMIT 1';
+        const dateResult = await conn.query(dateQuery, [jeuId, utilisateurId]);
 
         const dateDebut = dateResult.length > 0 ? dateResult[0].date_debut : new Date();
         const dateFin = dateResult.length > 0 ? dateResult[0].date_fin : new Date();
@@ -256,10 +256,14 @@ app.post('/locations/infos', async (req, res) => {
             const newCommentaire = typeof commentaire === 'string' && commentaire.trim() !== '' ? commentaire.trim() : null;
 
             if (notesChanged || commentaireChanged) {
-                // Effectuer la mise à jour uniquement si les valeurs ont changé
-                const updateQuery = 'UPDATE location SET notes = ?, commentaire = ? WHERE jeux_id = ? AND date_debut = ? AND date_fin = ?';
-                await conn.query(updateQuery, [newNotes, newCommentaire, jeuId, dateDebut, dateFin]);
+                // Modification de la requête pour inclure l'ID de l'utilisateur connecté lors de l'insertion
+                const updateQuery = 'UPDATE location SET notes = ?, commentaire = ? WHERE jeux_id = ? AND date_debut = ? AND date_fin = ? AND joueur_id = ?';
+                await conn.query(updateQuery, [newNotes, newCommentaire, jeuId, dateDebut, dateFin, utilisateurId]);
             }
+        } else {
+            // Modification de la requête pour inclure l'ID de l'utilisateur connecté lors de l'insertion
+            const createLocationQuery = 'INSERT INTO location (jeux_id, joueur_id, date_debut, date_fin, notes, commentaire) VALUES (?, ?, ?, ?, ?, ?)';
+            await conn.query(createLocationQuery, [jeuId, utilisateurId, dateDebut, dateFin, newNotes, newCommentaire]);
         }
 
         res.status(201).json({ success: true, message: 'Location créée avec succès' });
@@ -268,6 +272,7 @@ app.post('/locations/infos', async (req, res) => {
         res.status(500).json({ success: false, message: 'Erreur interne du serveur' });
     }
 });
+
 
 
 

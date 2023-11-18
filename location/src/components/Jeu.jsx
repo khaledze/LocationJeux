@@ -12,6 +12,9 @@ export default function Jeu() {
   const [comments, setComments] = useState([]);
   const [showComments, setShowComments] = useState(false);
   const [selectedJeuForComments, setSelectedJeuForComments] = useState(null);
+  const [averageNotes, setAverageNotes] = useState(null);
+  const [notesArray, setNotesArray] = useState([]);
+
 
   const utilisateurId = localStorage.getItem("utilisateurId"); // Récupération de l'ID de l'utilisateur depuis le stockage local
 
@@ -57,24 +60,33 @@ export default function Jeu() {
 
   const handleAfficherCommentairesClick = async (jeu) => {
     try {
-      const response = await fetch(
-        `http://localhost:3001/locations/jeu/${jeu.id}`
-      );
+      const response = await fetch(`http://localhost:3001/locations/jeu/${jeu.id}`);
       const data = await response.json();
-
+  
       console.log("Comments data:", data);
       const commentsWithUsernames = data.map((comment) => ({
         ...comment,
         nomUtilisateur: comment.utilisateur_nom,
       }));
-
+  
       setComments(commentsWithUsernames);
+  
+      const newNotesArray = commentsWithUsernames.map((comment) => comment.notes);
+      setNotesArray(newNotesArray);
+  
+      const filteredNotesArray = newNotesArray.filter((note) => !isNaN(note));
+      const average = filteredNotesArray.length > 0 ? filteredNotesArray.reduce((acc, value) => acc + parseFloat(value), 0) / filteredNotesArray.length : null;
+  
+      setAverageNotes(average);
+  
       setSelectedJeuForComments(jeu.id);
       setShowComments(!showComments);
     } catch (error) {
       console.error("Erreur lors de la récupération des commentaires :", error);
     }
   };
+  
+  
 
   // Fonction pour gérer le clic sur le bouton "Louer" pour effectuer la location
   const handleLouerClick = async () => {
@@ -215,10 +227,7 @@ export default function Jeu() {
                       </li>
                     ))}
                   </ul>
-                  <p>
-                    Moyenne générale des notes :{" "}
-                    {comments[0]?.moyenne_notes || "Aucune note"}
-                  </p>
+                  <p>Moyenne générale des notes : {averageNotes !== null ? averageNotes : "Aucune note"}</p>
                 </div>
               )}
             </div>
