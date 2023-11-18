@@ -84,49 +84,53 @@
 }
 
 
-
 .rent-page {
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: white;
+  background-color: #000000; 
   padding: 20px;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #ccc; 
+  border-radius: 15px; 
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); 
   text-align: center;
-  width: 300px; 
+  width: 300px;
   height: 400px;
   z-index: 2;
+  color: white;
 }
 
 .rent-page label {
   display: block;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
+  font-weight: bold; 
 }
 
 .rent-page input {
-  width: 100%;
-  padding: 8px;
-  margin-bottom: 15px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
+  width: calc(100% - 18px); 
+  padding: 10px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  border: 1px solid #ddd; 
+  outline: none; 
 }
 
-.rent-page button {
+/* Style du bouton pour fermer */
+.rent-page button.close-button {
   padding: 10px 20px;
   border: none;
   border-radius: 5px;
-  background-color: #007bff;
+  background-color: #dc3545; 
   color: white;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
-.rent-page button:hover {
-  background-color: #0056b3;
+.rent-page button.close-button:hover {
+  background-color: #c82333; 
 }
+
 
 .close-button {
   position: absolute;
@@ -188,25 +192,6 @@ h1 {
   align-items: center;
 }
 
-.mes-achats-button {
-  position: relative;
-  display: inline-block;
-  padding: 8px 16px;
-  border: 2px solid #fefefe;
-  text-transform: uppercase;
-  color: #fefefe;
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 14px;
-  background-color: transparent;
-  overflow: hidden;
-}
-
-
-
-.mes-achats-button:hover {
-  background-color: #414242;
-}
 
 .search-bar {
   margin-left: 10px;
@@ -257,65 +242,14 @@ h1 {
 }
 
  
-.deconnexion-button {
-  position: relative;
-  display: inline-block;
-  padding: 10px 20px;
-  border: 2px solid #fefefe;
-  text-transform: uppercase;
-  color: #fefefe;
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 14px;
-  background-color: transparent;
-  overflow: hidden;
 
-}
-
-.deconnexion-button::before,
-.deconnexion-button::after {
-  content: '';
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background-color: #212121;
-  transition: transform 0.3s;
-  z-index: -1;
-}
-
-.deconnexion-button::before {
-  top: 0;
-  left: 0;
-  transform-origin: top left;
-}
-
-.deconnexion-button::after {
-  bottom: 0;
-  right: 0;
-  transform-origin: bottom right;
-}
-
-.deconnexion-button:hover::before {
-  transform: scaleX(0);
-}
-
-.deconnexion-button:hover::after {
-  transform: scaleY(0);
-}
-
-.deconnexion-button:hover {
-  border-color: #fefefe;
-}
-.deconnexion-button {
-  margin-left: auto; 
-}
 
 
 button.test {
   position: relative;
   display: inline-block;
   padding: 1em 1.8em;
-  border: 2px solid #645bff;
+  border: 2px solid white;
   border-radius: 20px;
   text-transform: uppercase;
   color: #fff;
@@ -336,6 +270,7 @@ button.test::after {
   transition: transform 0.3s;
   z-index: -1;
   border-radius: 20px;
+  
 }
 
 button.test::before {
@@ -362,6 +297,7 @@ button.test:hover {
   border-color: transparent;
 }
 
-
-
+.deco {
+  margin-left: 40px; 
+}
 
