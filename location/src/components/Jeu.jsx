@@ -166,6 +166,7 @@ export default function Jeu() {
             <div className="card-content">
               <h2>{jeu.nom_jeu}</h2>
               <p>Prix: {jeu.prix}€</p>
+              <div className="button-container">
               <img
                 src={require("../img/add.svg").default}
                 alt="Obtenir"
@@ -200,6 +201,7 @@ export default function Jeu() {
                   
                 }}
               />
+              </div>
 
         {selectedJeuForComments === jeu.id && showComments && (
           <div>
