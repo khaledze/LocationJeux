@@ -12,9 +12,8 @@ export default function Jeu() {
   const utilisateurId = localStorage.getItem("utilisateurId"); // Récupération de l'ID de l'utilisateur depuis le stockage local
 
   // Filtrage des jeux en fonction du terme de recherche
-  const filteredJeux = jeux.filter(
-    (jeu) =>
-      jeu.nom_jeu.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredJeux = jeux.filter((jeu) =>
+    jeu.nom_jeu.toLowerCase().includes(searchTerm.toLowerCase())
   );
   // Calcul du prix total en fonction du jeu sélectionné et des dates de location
   const [totalPrice, setTotalPrice] = useState(0);
@@ -90,9 +89,14 @@ export default function Jeu() {
           <Link to="/acceuil">Ma Boutique de Jeux</Link>
         </h1>
         <div className="deconnexion-container">
-        <Link to="/connexion" className="deconnexion-link">
-          <button className="deconnexion-button">Déconnexion</button>
-        </Link>
+          <Link to="/connexion" className="deconnexion-link">
+            <button className="test">
+              Deconnexion
+              <div class="arrow-wrapper">
+                <div class="arrow"></div>
+              </div>
+            </button>
+          </Link>
         </div>
 
         <div className="header-right">
