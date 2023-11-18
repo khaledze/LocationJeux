@@ -17,39 +17,47 @@ export default function MesJeux() {
     setShowReviewForm(true);
   };
   // Fonction pour soumettre l'avis sur un jeu
-  const handleReviewSubmit = async (e) => {
-    e.preventDefault();
-  
-    try {
-      const response = await fetch("http://localhost:3001/locations/infos", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          jeuId: selectedGameForReview.id,
-          utilisateurId: localStorage.getItem("utilisateurId"),
-          notes: rating,
-          commentaire: comment,
-        }),
-      });
-  
-      if (response.ok) {
-        // Note et/ou commentaire ajouté avec succès, afficher une alerte
-        alert("Note et/ou commentaire ajouté avec succès!");
-        console.log("Review submitted successfully");
-      } else {
-        console.error("Failed to submit review:", response.statusText);
-      }
-    } catch (error) {
-      console.error("Error submitting review:", error);
-    } finally {
-      setShowReviewForm(false);
-      setSelectedGameForReview(null);
-      setComment("");
-      setRating(0);
+  // Fonction pour soumettre l'avis sur un jeu
+const handleReviewSubmit = async (e) => {
+  e.preventDefault();
+
+  // Vérifier si la note et le commentaire sont renseignés
+  if (!rating || !comment) {
+    alert("Veuillez attribuer une note et laisser un commentaire avant de soumettre.");
+    return;
+  }
+
+  try {
+    const response = await fetch("http://localhost:3001/locations/infos", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        jeuId: selectedGameForReview.id,
+        utilisateurId: localStorage.getItem("utilisateurId"),
+        notes: rating,
+        commentaire: comment,
+      }),
+    });
+
+    if (response.ok) {
+      // Note et/ou commentaire ajouté avec succès, afficher une alerte
+      alert("Note et/ou commentaire ajouté avec succès!");
+      console.log("Review submitted successfully");
+    } else {
+      console.error("Failed to submit review:", response.statusText);
     }
-  };
+  } catch (error) {
+    console.error("Error submitting review:", error);
+  } finally {
+    setShowReviewForm(false);
+    setSelectedGameForReview(null);
+    setComment("");
+    setRating(0);
+  }
+};
+
 
   // Effet pour récupérer les jeux disponibles et les emplacements des jeux pour l'utilisateur
   useEffect(() => {
