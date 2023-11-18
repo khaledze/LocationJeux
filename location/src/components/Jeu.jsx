@@ -211,7 +211,7 @@ export default function Jeu() {
                 </li>
               ))}
             </ul>
-            <p>Moyenne générale des notes : {comments.length > 0 ? (comments[0]?.notes > 0 ? comments[0]?.moyenne_notes || 'Aucune note' : 'Aucune note') : 'Aucune note'}</p>
+            <p>Moyenne générale des notes : {comments[0]?.moyenne_notes || 'Aucune note'}</p>
           </div>
         )}
     </div>
