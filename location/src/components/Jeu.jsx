@@ -159,8 +159,9 @@ export default function Jeu() {
           <Link to="/connexion" className="deconnexion-link">
             <button className="test">
               Deconnexion
-            
-              
+              <div class="arrow-wrapper">
+                <div class="arrow"></div>
+              </div>
             </button>
           </Link>
         </div>
@@ -228,29 +229,10 @@ export default function Jeu() {
                   </ul>
                   <p>Moyenne générale des notes : {averageNotes !== null ? averageNotes : "Aucune note"}</p>
                 </div>
-
-                {selectedJeuForComments === jeu.id && showComments && (
-                  <div>
-                    <h3>Commentaires :</h3>
-                    <ul>
-                      {comments.map((comment) => (
-                        <li key={comment.id}>
-                          <strong>
-                            {comment.nom} {comment.prenom}:
-                          </strong>{" "}
-                          {comment.commentaire}
-                        </li>
-                      ))}
-                    </ul>
-                    <p>
-                      Moyenne générale des notes :{" "}
-                      {comments[0]?.moyenne_notes || "Aucune note"}
-                    </p>
-                  </div>
-                )}
-              </div>
+              )}
             </div>
-          ))}
+          </div>
+        ))}
 
         {showRentPage && (
           <div className="rent-page">
