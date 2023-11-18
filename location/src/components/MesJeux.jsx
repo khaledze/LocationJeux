@@ -19,7 +19,7 @@ export default function MesJeux() {
   // Fonction pour soumettre l'avis sur un jeu
   const handleReviewSubmit = async (e) => {
     e.preventDefault();
-
+  
     try {
       const response = await fetch("http://localhost:3001/locations/infos", {
         method: "POST",
@@ -33,8 +33,10 @@ export default function MesJeux() {
           commentaire: comment,
         }),
       });
-
+  
       if (response.ok) {
+        // Note et/ou commentaire ajouté avec succès, afficher une alerte
+        alert("Note et/ou commentaire ajouté avec succès!");
         console.log("Review submitted successfully");
       } else {
         console.error("Failed to submit review:", response.statusText);
