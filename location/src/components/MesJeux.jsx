@@ -97,9 +97,11 @@ export default function MesJeux() {
         </h1>
        
         <div className="header-right">
+          <div className="deco">
           <Link to="/acceuil">
-            <button className="mes-achats-button">Accueil</button>
+            <button className="test">Accueil</button>
           </Link>
+          </div>
         </div>
       </header>
       <div className="card-wrapper">
