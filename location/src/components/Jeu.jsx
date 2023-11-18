@@ -71,11 +71,12 @@ export default function Jeu() {
   
       setComments(commentsWithUsernames);
       setSelectedJeuForComments(jeu.id);
-      setShowComments(true);
+      setShowComments(!showComments);
     } catch (error) {
       console.error("Erreur lors de la récupération des commentaires :", error);
     }
   };
+  
   
   // Fonction pour gérer le clic sur le bouton "Louer" pour effectuer la location
   const handleLouerClick = async () => {
@@ -200,7 +201,7 @@ export default function Jeu() {
                 }}
               />
 
-        {selectedJeuForComments === jeu.id && (
+        {selectedJeuForComments === jeu.id && showComments && (
           <div>
             <h3>Commentaires :</h3>
             <ul>
