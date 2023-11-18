@@ -279,6 +279,35 @@ app.post('/locations', async (req, res) => {
         }
     }
 });
+app.get('/locations/jeu/:jeuId', async (req, res) => {
+    let conn;
+    try {
+        conn = await pool.getConnection();
+        const jeuId = req.params.jeuId;
+
+        const query = `
+            SELECT location.*, utilisateurs.nom, utilisateurs.prenom
+            FROM location
+            JOIN utilisateurs ON location.joueur_id = utilisateurs.id
+            WHERE location.jeux_id = ? AND location.commentaire IS NOT NULL
+        `;
+
+        const rows = await conn.query(query, [jeuId]);
+
+        res.status(200).json(rows);
+    } catch (err) {
+        console.error("Erreur lors de la récupération des locations et commentaires :", err);
+        res.status(500).send("Erreur interne du serveur");
+    } finally {
+        if (conn) {
+            conn.release();
+        }
+    }
+});
+
+
+
+
 
 app.listen(3001, () => {
     console.log('Serveur démarré'); 

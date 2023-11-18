@@ -9,6 +9,10 @@ export default function Jeu() {
   const [rentalDate, setRentalDate] = useState(""); // Date de début de la location
   const [returnDate, setReturnDate] = useState(""); // Date de fin de la location
   const [searchTerm, setSearchTerm] = useState(""); // Terme de recherche pour filtrer les jeux
+  const [comments, setComments] = useState([]);
+  const [showComments, setShowComments] = useState(false);
+const [selectedJeuForComments, setSelectedJeuForComments] = useState(null);
+
   const utilisateurId = localStorage.getItem("utilisateurId"); // Récupération de l'ID de l'utilisateur depuis le stockage local
 
   // Filtrage des jeux en fonction du terme de recherche
@@ -46,9 +50,25 @@ export default function Jeu() {
     fetchJeux();
   }, []);
 
-  const handleObtenirClick = (jeu) => {
+  const handleObtenirClick = async (jeu) => {
     setSelectedJeu(jeu);
     setShowRentPage(true);
+  
+    try {
+      const response = await fetch(`http://localhost:3001/locations/jeu/${jeu.id}`);
+      const data = await response.json();
+
+      console.log("Comments data:", data);
+      const commentsWithUsernames = data.map(comment => ({
+        ...comment,
+        nomUtilisateur: comment.utilisateur_nom,
+      }));
+  
+      setComments(commentsWithUsernames);
+      setSelectedJeuForComments(jeu.id);
+    } catch (error) {
+      console.error("Erreur lors de la récupération des commentaires :", error);
+    }
   };
   // Fonction pour gérer le clic sur le bouton "Louer" pour effectuer la location
   const handleLouerClick = async () => {
@@ -122,36 +142,60 @@ export default function Jeu() {
         </div>
       </header>
       <div className="jeux-container">
-        {filteredJeux.map((jeu) => (
-          <div
-            key={jeu.id}
-            className="card"
-            style={{
-              backgroundImage: `url(${jeu.lien_image})`,
-              backgroundSize: "cover",
-              position: "relative",
-            }}
-          >
-            <div className="card-content">
-              <h2>{jeu.nom_jeu}</h2>
-              <p>Prix: {jeu.prix}€</p>
-              <img
-                src={require("../img/add.svg").default}
-                alt="Obtenir"
-                style={{
-                  width: "50px",
-                  height: "30px",
-                  cursor: "pointer",
-                  alignSelf: "flex-end",
-                  marginRight: "370px",
-                  borderRadius: "10px",
-                  padding: "10px",
-                }}
-                onClick={() => handleObtenirClick(jeu)}
-              />
-            </div>
+      {filteredJeux.map((jeu) => (
+  <div
+    key={jeu.id}
+    className="card"
+    style={{
+      backgroundImage: `url(${jeu.lien_image})`,
+      backgroundSize: "cover",
+      position: "relative",
+    }}
+  >
+    <div className="card-content">
+      <h2>{jeu.nom_jeu}</h2>
+      <p>Prix: {jeu.prix}€</p>
+      <img
+        src={require("../img/add.svg").default}
+        alt="Obtenir"
+        style={{
+          width: "50px",
+          height: "30px",
+          cursor: "pointer",
+          alignSelf: "flex-end",
+          marginRight: "370px",
+          borderRadius: "10px",
+          padding: "10px",
+        }}
+        onClick={() => handleObtenirClick(jeu)}
+      />
+        <button
+          onClick={() => {
+            handleObtenirClick(jeu);
+            setShowRentPage(false); 
+          }}
+        >
+          Afficher les commentaires
+        </button>
+
+        {selectedJeuForComments === jeu.id && (
+          <div>
+            <h3>Commentaires :</h3>
+            <ul>
+              {comments.map((comment) => (
+                <li key={comment.id}>
+                  <strong>{comment.nom} {comment.prenom}:</strong> {comment.commentaire}
+                </li>
+              ))}
+            </ul>
           </div>
-        ))}
+        )}
+    </div>
+  </div>
+))}
+
+
+
         {showRentPage && (
           <div className="rent-page">
             <button
