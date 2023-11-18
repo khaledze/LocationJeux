@@ -192,7 +192,9 @@ h1 {
   display: flex;
   align-items: center;
 }
-
+.header-right > *:not(:last-child) {
+  margin-right: 10px; 
+}
 
 .search-bar {
   margin-left: 10px;
@@ -310,4 +312,8 @@ button.test:hover {
   position: relative;
   cursor: pointer;
   overflow: hidden;
+}
+
+.title-white {
+  color: white;
 }

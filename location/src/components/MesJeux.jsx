@@ -18,46 +18,47 @@ export default function MesJeux() {
   };
   // Fonction pour soumettre l'avis sur un jeu
   // Fonction pour soumettre l'avis sur un jeu
-const handleReviewSubmit = async (e) => {
-  e.preventDefault();
+  const handleReviewSubmit = async (e) => {
+    e.preventDefault();
 
-  // Vérifier si la note et le commentaire sont renseignés
-  if (!rating || !comment) {
-    alert("Veuillez attribuer une note et laisser un commentaire avant de soumettre.");
-    return;
-  }
-
-  try {
-    const response = await fetch("http://localhost:3001/locations/infos", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        jeuId: selectedGameForReview.id,
-        utilisateurId: localStorage.getItem("utilisateurId"),
-        notes: rating,
-        commentaire: comment,
-      }),
-    });
-
-    if (response.ok) {
-      // Note et/ou commentaire ajouté avec succès, afficher une alerte
-      alert("Note et/ou commentaire ajouté avec succès!");
-      console.log("Review submitted successfully");
-    } else {
-      console.error("Failed to submit review:", response.statusText);
+    // Vérifier si la note et le commentaire sont renseignés
+    if (!rating || !comment) {
+      alert(
+        "Veuillez attribuer une note et laisser un commentaire avant de soumettre."
+      );
+      return;
     }
-  } catch (error) {
-    console.error("Error submitting review:", error);
-  } finally {
-    setShowReviewForm(false);
-    setSelectedGameForReview(null);
-    setComment("");
-    setRating(0);
-  }
-};
 
+    try {
+      const response = await fetch("http://localhost:3001/locations/infos", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          jeuId: selectedGameForReview.id,
+          utilisateurId: localStorage.getItem("utilisateurId"),
+          notes: rating,
+          commentaire: comment,
+        }),
+      });
+
+      if (response.ok) {
+        // Note et/ou commentaire ajouté avec succès, afficher une alerte
+        alert("Note et/ou commentaire ajouté avec succès!");
+        console.log("Review submitted successfully");
+      } else {
+        console.error("Failed to submit review:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error submitting review:", error);
+    } finally {
+      setShowReviewForm(false);
+      setSelectedGameForReview(null);
+      setComment("");
+      setRating(0);
+    }
+  };
 
   // Effet pour récupérer les jeux disponibles et les emplacements des jeux pour l'utilisateur
   useEffect(() => {
@@ -100,15 +101,20 @@ const handleReviewSubmit = async (e) => {
   return (
     <div>
       <header className="custom-header1">
-        <h1>
-          <Link to="/acceuil">Ma Boutique de Jeux</Link>
+        <h1 style={{ color: "white" }}>
+          <Link
+            to="/acceuil"
+            style={{ textDecoration: "none", color: "inherit" }}
+          >
+            Ma Boutique de Jeux
+          </Link>
         </h1>
-       
+
         <div className="header-right">
           <div className="deco">
-          <Link to="/acceuil">
-            <button className="test">Accueil</button>
-          </Link>
+            <Link to="/acceuil">
+              <button className="test">Accueil</button>
+            </Link>
           </div>
         </div>
       </header>
@@ -126,8 +132,14 @@ const handleReviewSubmit = async (e) => {
             {location.jeu && (
               <div className="card-content">
                 <h2>{location.jeu.nom_jeu}</h2>
-                <p>Date de début: {new Date(location.date_debut).toLocaleDateString()}</p>
-                <p>Date de fin: {new Date(location.date_fin).toLocaleDateString()}</p>
+                <p>
+                  Date de début:{" "}
+                  {new Date(location.date_debut).toLocaleDateString()}
+                </p>
+                <p>
+                  Date de fin:{" "}
+                  {new Date(location.date_fin).toLocaleDateString()}
+                </p>
                 <p>Prix: {location.prix}€</p>
                 <div className="card-image">
                   <img
@@ -162,7 +174,9 @@ const handleReviewSubmit = async (e) => {
               value={rating}
               onChange={(e) => setRating(e.target.value)}
             />
-            <button className="location" type="submit">Envoyer</button>
+            <button className="location" type="submit">
+              Envoyer
+            </button>
           </form>
           <button
             className="close-button"

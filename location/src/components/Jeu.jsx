@@ -12,7 +12,6 @@ export default function Jeu() {
   const [comments, setComments] = useState([]);
   const [showComments, setShowComments] = useState(false);
   const [selectedJeuForComments, setSelectedJeuForComments] = useState(null);
-  
 
   const utilisateurId = localStorage.getItem("utilisateurId"); // Récupération de l'ID de l'utilisateur depuis le stockage local
 
@@ -62,13 +61,13 @@ export default function Jeu() {
         `http://localhost:3001/locations/jeu/${jeu.id}`
       );
       const data = await response.json();
-  
+
       console.log("Comments data:", data);
       const commentsWithUsernames = data.map((comment) => ({
         ...comment,
         nomUtilisateur: comment.utilisateur_nom,
       }));
-  
+
       setComments(commentsWithUsernames);
       setSelectedJeuForComments(jeu.id);
       setShowComments(!showComments);
@@ -76,8 +75,7 @@ export default function Jeu() {
       console.error("Erreur lors de la récupération des commentaires :", error);
     }
   };
-  
-  
+
   // Fonction pour gérer le clic sur le bouton "Louer" pour effectuer la location
   const handleLouerClick = async () => {
     try {
@@ -114,13 +112,15 @@ export default function Jeu() {
   return (
     <div>
       <header className="custom-header">
-        <h1>
-          <Link to="/acceuil">Ma Boutique de Jeux</Link>
+        <h1 style={{ color: "white" }}>
+          <Link
+            to="/acceuil"
+            style={{ textDecoration: "none", color: "inherit" }}
+          >
+            Ma Boutique de Jeux
+          </Link>
         </h1>
-
         <div className="header-right">
-          
-         
           <div className="form-control">
             <input
               type="text"
@@ -169,60 +169,61 @@ export default function Jeu() {
               <h2>{jeu.nom_jeu}</h2>
               <p>Prix: {jeu.prix}€</p>
               <div className="button-container">
-              <img
-                src={require("../img/add.svg").default}
-                alt="Obtenir"
-                style={{
-                  width: "50px",
-                  height: "30px",
-                  cursor: "pointer",
-                  alignSelf: "flex-end",
-                  marginRight: "370px",
-                  borderRadius: "10px",
-                  padding: "10px",
-                }}
-                
-                onClick={() => handleObtenirClick(jeu)}
-              />
-              <img
-                src={require("../img/acmt.svg").default}
-                alt="afficher les commentaires"
-                onClick={() => {
-                  handleAfficherCommentairesClick(jeu);
-                  setShowRentPage(false);
-                }}
-                style={{
-                  
-                  width: "50px",
-                  height: "30px",
-                  cursor: "pointer",
-                  alignSelf: "flex-end",
-                  marginRight: "370px",
-                  borderRadius: "10px",
-                  padding: "10px",
-                  
-                }}
-              />
+                <img
+                  src={require("../img/add.svg").default}
+                  alt="Obtenir"
+                  style={{
+                    width: "50px",
+                    height: "30px",
+                    cursor: "pointer",
+                    alignSelf: "flex-end",
+                    marginRight: "370px",
+                    borderRadius: "10px",
+                    padding: "10px",
+                  }}
+                  onClick={() => handleObtenirClick(jeu)}
+                />
+                <img
+                  src={require("../img/acmt.svg").default}
+                  alt="afficher les commentaires"
+                  onClick={() => {
+                    handleAfficherCommentairesClick(jeu);
+                    setShowRentPage(false);
+                  }}
+                  style={{
+                    width: "50px",
+                    height: "30px",
+                    cursor: "pointer",
+                    alignSelf: "flex-end",
+                    marginRight: "370px",
+                    borderRadius: "10px",
+                    padding: "10px",
+                  }}
+                />
               </div>
 
-        {selectedJeuForComments === jeu.id && showComments && (
-          <div>
-            <h3>Commentaires :</h3>
-            <ul>
-              {comments.map((comment) => (
-                <li key={comment.id}>
-                  <strong>{comment.nom} {comment.prenom}:</strong> {comment.commentaire}
-                </li>
-              ))}
-            </ul>
-            <p>Moyenne générale des notes : {comments[0]?.moyenne_notes || 'Aucune note'}</p>
+              {selectedJeuForComments === jeu.id && showComments && (
+                <div>
+                  <h3>Commentaires :</h3>
+                  <ul>
+                    {comments.map((comment) => (
+                      <li key={comment.id}>
+                        <strong>
+                          {comment.nom} {comment.prenom}:
+                        </strong>{" "}
+                        {comment.commentaire}
+                      </li>
+                    ))}
+                  </ul>
+                  <p>
+                    Moyenne générale des notes :{" "}
+                    {comments[0]?.moyenne_notes || "Aucune note"}
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
-        )}
-    </div>
-  </div>
-))}
-
-
+        ))}
 
         {showRentPage && (
           <div className="rent-page">
@@ -251,7 +252,9 @@ export default function Jeu() {
             />
 
             <p>Prix total: {totalPrice}€</p>
-            <button className="location" onClick={handleLouerClick}>Louer</button>
+            <button className="location" onClick={handleLouerClick}>
+              Louer
+            </button>
           </div>
         )}
       </div>
