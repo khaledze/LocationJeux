@@ -52,27 +52,34 @@ export default function Jeu() {
 
   const handleObtenirClick = async (jeu) => {
     setSelectedJeu(jeu);
-    setShowRentPage(true);
-
+  
+    if (selectedJeuForComments === jeu.id) {
+      setShowComments(false);
+      setSelectedJeuForComments(null);
+      setComments([]);
+      return;
+    }
+  
     try {
       const response = await fetch(
         `http://localhost:3001/locations/jeu/${jeu.id}`
       );
       const data = await response.json();
-
+  
       console.log("Comments data:", data);
       const commentsWithUsernames = data.map((comment) => ({
         ...comment,
         nomUtilisateur: comment.utilisateur_nom,
       }));
-
+  
       setComments(commentsWithUsernames);
       setSelectedJeuForComments(jeu.id);
+      setShowComments(true);
     } catch (error) {
       console.error("Erreur lors de la récupération des commentaires :", error);
     }
   };
-  // Fonction pour gérer le clic sur le bouton "Louer" pour effectuer la location
+  
   const handleLouerClick = async () => {
     try {
       const { id: jeuId } = selectedJeu;
